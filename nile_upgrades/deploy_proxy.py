@@ -17,10 +17,11 @@ def deploy_proxy(contract_name):
     hash = declare_impl.declare_impl(nre, contract_name)
 
     click.echo(f"Deploying upgradeable proxy...")
-    pt = os.path.dirname(os.path.realpath(__file__)).replace("/nile_upgrades", "")
-    overriding_path = (f"{pt}/artifacts", f"{pt}/artifacts/abis")
-    overriding_abi = f"artifacts/abis/{contract_name}.json";
-    addr, abi = nre.deploy("Proxy", arguments=[hash], overriding_path=overriding_path, abi=overriding_abi)
+    addr, abi = nre.deploy("Proxy", arguments=[hash], overriding_path=get_proxy_artifact_path(), abi=f"artifacts/abis/{contract_name}.json")
     click.echo(f"Proxy deployed to address {addr}, abi {abi}")
 
     return addr
+
+def get_proxy_artifact_path():
+    pt = os.path.dirname(os.path.realpath(__file__)).replace("/nile_upgrades", "")
+    return (f"{pt}/artifacts", f"{pt}/artifacts/abis")

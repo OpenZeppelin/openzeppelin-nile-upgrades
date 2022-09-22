@@ -26,12 +26,3 @@ def upgrade_proxy(proxy_address, contract_name):
     click.echo(f"Proxy upgraded to implementation with hash {hash}")
 
     deployments.update(proxy_address, f"artifacts/abis/{contract_name}.json", nre.network, alias=None)
-
-def get_hash(contract_name):
-    with open(f"artifacts/{contract_name}.json", "r") as fp:
-        contract_class = ContractClass.loads(fp.read())
-
-    return hex(compute_class_hash(
-        contract_class=contract_class,
-        hash_func=pedersen_hash
-    ))
