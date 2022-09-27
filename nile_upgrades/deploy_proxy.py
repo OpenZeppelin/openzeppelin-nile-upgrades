@@ -10,8 +10,8 @@ from nile_upgrades import declare_impl
 @click.command()
 @click.argument("contract_name", type=str)
 @click.argument("signer", type=str)
-@click.argument("max_fee", type=str)
-def deploy_proxy(contract_name, signer, max_fee):
+@click.option("--max_fee", nargs=1)
+def deploy_proxy(contract_name, signer, max_fee=None):
     """
     Deploy an upgradeable proxy for an implementation contract.
     """
