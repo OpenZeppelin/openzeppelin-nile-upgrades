@@ -3,7 +3,6 @@ import click
 import os
 
 from nile.nre import NileRuntimeEnvironment
-from nile.core.account import Account
 from starkware.starknet.compiler.compile import get_selector_from_name
 
 from nile_upgrades import declare_impl

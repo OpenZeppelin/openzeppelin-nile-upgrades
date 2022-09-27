@@ -1,7 +1,6 @@
 import click
 
 from nile.deployments import class_hash_exists
-
 from nile.core.account import Account
 from nile.utils import get_hash
 

@@ -1,11 +1,6 @@
 import click
 
-from starkware.crypto.signature.fast_pedersen_hash import pedersen_hash
-from starkware.starknet.core.os.class_hash import compute_class_hash
-from starkware.starknet.services.api.contract_class import ContractClass
-
 from nile.core.account import Account
-
 from nile.nre import NileRuntimeEnvironment
 from nile import deployments
 
