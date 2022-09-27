@@ -25,7 +25,6 @@ def deploy_proxy(contract_name, signer, initializer, args, max_fee=None):
 
     click.echo(f"Deploying upgradeable proxy...")
     selector = get_selector_from_name(initializer)
-    account = Account(signer, nre.network)
     addr, abi = nre.deploy("Proxy", arguments=[hash, selector, len(args), *args], overriding_path=get_proxy_artifact_path(), abi=f"artifacts/abis/{contract_name}.json")
     click.echo(f"Proxy deployed to address {addr}, abi {abi}")
 
