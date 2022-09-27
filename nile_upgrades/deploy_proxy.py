@@ -10,14 +10,15 @@ from nile_upgrades import declare_impl
 @click.command()
 @click.argument("contract_name", type=str)
 @click.argument("signer", type=str)
-def deploy_proxy(contract_name, signer):
+@click.argument("max_fee", type=str)
+def deploy_proxy(contract_name, signer, max_fee):
     """
     Deploy an upgradeable proxy for an implementation contract.
     """
 
     nre = NileRuntimeEnvironment()
 
-    hash = declare_impl.declare_impl(nre, contract_name, signer)
+    hash = declare_impl.declare_impl(nre, contract_name, signer, max_fee)
 
     click.echo(f"Deploying upgradeable proxy...")
     selector = get_selector_from_name("initializer")
