@@ -1,8 +1,8 @@
-from email.policy import default
 import click
 import os
 
 from nile.nre import NileRuntimeEnvironment
+from nile.common import ABIS_DIRECTORY
 from starkware.starknet.compiler.compile import get_selector_from_name
 
 from nile_upgrades import declare_impl
@@ -13,7 +13,8 @@ from nile_upgrades import declare_impl
 @click.argument("args", nargs=-1, type=click.UNPROCESSED)
 @click.option("--initializer", nargs=1, default="initializer")
 @click.option("--max_fee", nargs=1)
-def deploy_proxy(contract_name, signer, initializer, args, max_fee=None):
+@click.option("--alias", nargs=1)
+def deploy_proxy(contract_name, signer, initializer, args, max_fee=None, alias=None):
     """
     Deploy an upgradeable proxy for an implementation contract.
     """
@@ -24,7 +25,7 @@ def deploy_proxy(contract_name, signer, initializer, args, max_fee=None):
 
     click.echo(f"Deploying upgradeable proxy...")
     selector = get_selector_from_name(initializer)
-    addr, abi = nre.deploy("Proxy", arguments=[hash, selector, len(args), *args], overriding_path=get_proxy_artifact_path(), abi=f"artifacts/abis/{contract_name}.json")
+    addr, abi = nre.deploy("Proxy", arguments=[hash, selector, len(args), *args], alias=alias, overriding_path=get_proxy_artifact_path(), abi=get_contract_abi(contract_name))
     click.echo(f"Proxy deployed to address {addr}, abi {abi}")
 
     return addr
@@ -32,3 +33,6 @@ def deploy_proxy(contract_name, signer, initializer, args, max_fee=None):
 def get_proxy_artifact_path():
     pt = os.path.dirname(os.path.realpath(__file__)).replace("/nile_upgrades", "")
     return (f"{pt}/artifacts", f"{pt}/artifacts/abis")
+
+def get_contract_abi(contract_name):
+    return f"{ABIS_DIRECTORY}/{contract_name}.json"

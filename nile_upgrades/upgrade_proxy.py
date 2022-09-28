@@ -11,7 +11,8 @@ from nile_upgrades import declare_impl
 @click.argument("proxy_address", type=str)
 @click.argument("contract_name", type=str)
 @click.option("--max_fee", nargs=1)
-def upgrade_proxy(proxy_address, contract_name, signer, max_fee=None):
+@click.option("--alias", nargs=1)
+def upgrade_proxy(proxy_address, contract_name, signer, max_fee=None, alias=None):
     """
     Upgrade a proxy to a different implementation contract.
     """
@@ -25,4 +26,4 @@ def upgrade_proxy(proxy_address, contract_name, signer, max_fee=None):
     account.send(proxy_address, "upgrade", calldata=[int(hash, 16)], max_fee=max_fee)
     click.echo(f"Proxy upgraded to implementation with hash {hash}")
 
-    deployments.update(proxy_address, f"artifacts/abis/{contract_name}.json", nre.network, alias=None)
+    deployments.update(proxy_address, f"artifacts/abis/{contract_name}.json", nre.network, alias=alias)
