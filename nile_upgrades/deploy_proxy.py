@@ -8,8 +8,8 @@ from starkware.starknet.compiler.compile import get_selector_from_name
 from nile_upgrades import declare_impl
 
 @click.command()
-@click.argument("contract_name", type=str)
 @click.argument("signer", type=str)
+@click.argument("contract_name", type=str)
 @click.argument("args", nargs=-1, type=click.UNPROCESSED)
 @click.option("--initializer", nargs=1, default="initializer")
 @click.option("--max_fee", nargs=1)

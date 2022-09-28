@@ -7,9 +7,9 @@ from nile import deployments
 from nile_upgrades import declare_impl
 
 @click.command()
+@click.argument("signer", type=str)
 @click.argument("proxy_address", type=str)
 @click.argument("contract_name", type=str)
-@click.argument("signer", type=str)
 @click.option("--max_fee", nargs=1)
 def upgrade_proxy(proxy_address, contract_name, signer, max_fee=None):
     """
