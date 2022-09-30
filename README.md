@@ -61,7 +61,7 @@ tx_hash = nre.upgrade_proxy(["PKEY1", proxy_address, "my_contract_v2"])
 ### Installation
 
 1. Install [Poetry](https://python-poetry.org/docs/#installation)
-2. Clone https://github.com/ericglau/nile with branch `upgrades`
+2. Clone https://github.com/ericglau/nile with branch `upgrades`, e.g.: `git clone https://github.com/ericglau/nile -b upgrades nile_fork`
 3. Clone this project.
 4. From this project's root, setup venv and install dependencies:
 ```
@@ -70,7 +70,7 @@ source env/bin/activate
 poetry install
 pip3 install cairo-lang==0.10.0
 pip3 install openzeppelin-cairo-contracts==0.4.0b
-pip3 install -e <your_path_to_nile_from_step_2>
+pip3 install -e <your_path_to_nile_fork_from_step_2>
 pip3 install -e .
 ```
 
