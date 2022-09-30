@@ -1,5 +1,6 @@
 import click
 import os
+import logging
 
 from nile.nre import NileRuntimeEnvironment
 from nile.common import ABIS_DIRECTORY
@@ -23,10 +24,10 @@ def deploy_proxy(contract_name, signer, initializer, args, max_fee=None, alias=N
 
     hash = declare_impl.declare_impl(nre, contract_name, signer, max_fee)
 
-    click.echo(f"Deploying upgradeable proxy...")
+    logging.debug(f"Deploying upgradeable proxy...")
     selector = get_selector_from_name(initializer)
     addr, abi = nre.deploy("Proxy", arguments=[hash, selector, len(args), *args], alias=alias, overriding_path=get_proxy_artifact_path(), abi=get_contract_abi(contract_name))
-    click.echo(f"Proxy deployed to address {addr}, abi {abi}")
+    logging.debug(f"Proxy deployed to address {addr} using ABI {abi}")
 
     return addr
 

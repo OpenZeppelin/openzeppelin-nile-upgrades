@@ -1,4 +1,5 @@
 import click
+import logging
 
 from nile.core.account import Account
 from nile.nre import NileRuntimeEnvironment
@@ -29,9 +30,9 @@ def upgrade_proxy(proxy_identifier, contract_name, signer, max_fee=None):
 
     hash = declare_impl.declare_impl(nre, contract_name, signer, max_fee)
 
-    click.echo(f"Upgrading proxy {proxy_address}...")
+    logging.debug(f"Upgrading proxy {proxy_address}...")
     account = Account(signer, nre.network)
     account.send(proxy_address, "upgrade", calldata=[int(hash, 16)], max_fee=max_fee)
-    click.echo(f"Proxy upgraded to implementation with hash {hash}")
+    logging.info(f"⏭️  Upgraded proxy {proxy_address} to class hash {hash}")
 
     deployments.update(proxy_address, f"artifacts/abis/{contract_name}.json", nre.network)
