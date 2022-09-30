@@ -9,22 +9,22 @@ from nile_upgrades import declare_impl
 
 @click.command()
 @click.argument("signer", type=str)
-@click.argument("proxy_identifier", type=str)
+@click.argument("proxy_address_or_alias", type=str)
 @click.argument("contract_name", type=str)
-@click.option("--max_fee", nargs=1)
-def upgrade_proxy(proxy_identifier, contract_name, signer, max_fee=None):
+@click.option("--max_fee", nargs=1, help="Maximum fee for the transaction. Defaults to 0.")
+def upgrade_proxy(proxy_address_or_alias, contract_name, signer, max_fee=None):
     """
     Upgrade a proxy to a different implementation contract.
     """
 
     nre = NileRuntimeEnvironment()
 
-    ids = deployments.load(proxy_identifier, nre.network)
+    ids = deployments.load(proxy_address_or_alias, nre.network)
     id = next(ids, None)
     if id is None:
-        raise Exception(f"Deployment with address or alias {proxy_identifier} not found")
+        raise Exception(f"Deployment with address or alias {proxy_address_or_alias} not found")
     if next(ids, None) is not None:
-        raise Exception(f"Multiple deployments found with address or alias {proxy_identifier}")
+        raise Exception(f"Multiple deployments found with address or alias {proxy_address_or_alias}")
 
     proxy_address = id[0]
 

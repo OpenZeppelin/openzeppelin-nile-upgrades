@@ -11,11 +11,11 @@ from nile_upgrades import declare_impl
 @click.command()
 @click.argument("signer", type=str)
 @click.argument("contract_name", type=str)
-@click.argument("args", nargs=-1, type=click.UNPROCESSED)
-@click.option("--initializer", nargs=1, default="initializer")
-@click.option("--max_fee", nargs=1)
-@click.option("--alias", nargs=1)
-def deploy_proxy(contract_name, signer, initializer, args, max_fee=None, alias=None):
+@click.argument("initializer_args", nargs=-1, type=click.UNPROCESSED)
+@click.option("--initializer", nargs=1, default="initializer", help="Initializer function name. Defaults to 'initializer'")
+@click.option("--alias", nargs=1, help="Unique identifier for your proxy.")
+@click.option("--max_fee", nargs=1, help="Maximum fee for the transaction. Defaults to 0.")
+def deploy_proxy(contract_name, signer, initializer, initializer_args, alias=None, max_fee=None):
     """
     Deploy an upgradeable proxy for an implementation contract.
     """
@@ -26,7 +26,7 @@ def deploy_proxy(contract_name, signer, initializer, args, max_fee=None, alias=N
 
     logging.debug(f"Deploying upgradeable proxy...")
     selector = get_selector_from_name(initializer)
-    addr, abi = nre.deploy("Proxy", arguments=[hash, selector, len(args), *args], alias=alias, overriding_path=get_proxy_artifact_path(), abi=get_contract_abi(contract_name))
+    addr, abi = nre.deploy("Proxy", arguments=[hash, selector, len(initializer_args), *initializer_args], alias=alias, overriding_path=get_proxy_artifact_path(), abi=get_contract_abi(contract_name))
     logging.debug(f"Proxy deployed to address {addr} using ABI {abi}")
 
     return addr
