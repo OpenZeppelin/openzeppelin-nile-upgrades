@@ -15,6 +15,12 @@ from nile_upgrades import declare_impl
 def upgrade_proxy(proxy_address_or_alias, contract_name, signer, max_fee=None):
     """
     Upgrade a proxy to a different implementation contract.
+
+    SIGNER - private key alias for the Account to use.
+
+    PROXY_ADDRESS_OR_ALIAS - the proxy address or alias.
+
+    CONTRACT_NAME - the name of the implementation contract to upgrade to.
     """
 
     nre = NileRuntimeEnvironment()

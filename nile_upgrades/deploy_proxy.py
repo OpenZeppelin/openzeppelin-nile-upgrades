@@ -18,6 +18,12 @@ from nile_upgrades import declare_impl
 def deploy_proxy(contract_name, signer, initializer, initializer_args, alias=None, max_fee=None):
     """
     Deploy an upgradeable proxy for an implementation contract.
+
+    SIGNER - private key alias for the Account to use.
+
+    CONTRACT_NAME - the name of the implementation contract.
+
+    INITIALIZER_ARGS - arguments for the initializer function.
     """
 
     nre = NileRuntimeEnvironment()
