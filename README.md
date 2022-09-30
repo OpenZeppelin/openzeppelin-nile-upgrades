@@ -70,7 +70,8 @@ source env/bin/activate
 poetry install
 pip3 install cairo-lang==0.10.0
 pip3 install openzeppelin-cairo-contracts==0.4.0b
-pip3 install -e ../nile
+pip3 install -e <your_path_to_nile_from_step_2>
+pip3 install -e .
 ```
 
 ### Testing
