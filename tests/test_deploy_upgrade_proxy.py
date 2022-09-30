@@ -93,6 +93,7 @@ def test_compile():
 
     # Check script output
     assert "balance from v1: ['1']" in result.output
+    assert "upgrade tx: 0x" in result.output
     assert "balance from v2: ['1']" in result.output
     assert "balance after reset from v2: ['0']" in result.output
 

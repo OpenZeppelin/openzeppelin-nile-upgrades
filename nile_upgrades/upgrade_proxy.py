@@ -30,9 +30,20 @@ def upgrade_proxy(proxy_identifier, contract_name, signer, max_fee=None):
 
     hash = declare_impl.declare_impl(nre, contract_name, signer, max_fee)
 
-    logging.debug(f"Upgrading proxy {proxy_address}...")
+    logging.info(f"⏭️  Upgrading proxy {proxy_address} to class hash {hash}")
     account = Account(signer, nre.network)
-    account.send(proxy_address, "upgrade", calldata=[int(hash, 16)], max_fee=max_fee)
-    logging.info(f"⏭️  Upgraded proxy {proxy_address} to class hash {hash}")
+    upgrade_result = account.send(proxy_address, "upgrade", calldata=[int(hash, 16)], max_fee=max_fee)
+
+    txhash = get_tx_hash(upgrade_result)
+    logging.info(f"🧾 Upgrade transaction hash: {txhash}")
 
     deployments.update(proxy_address, f"artifacts/abis/{contract_name}.json", nre.network)
+
+    return txhash
+
+
+def get_tx_hash(output):
+    lines = output.splitlines()
+    for line in lines:
+        if "Transaction hash" in line:
+            return line.split(":")[1].strip()

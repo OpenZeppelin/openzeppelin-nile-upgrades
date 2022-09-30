@@ -10,7 +10,8 @@ def run(nre):
     account.send(proxy, "increase_balance", calldata=['1'])
     print(f"balance from v1: {nre.call(proxy, 'get_balance')}")
 
-    nre.upgrade_proxy([signer, proxy, "contract_v2"])
+    tx = nre.upgrade_proxy([signer, proxy, "contract_v2"])
+    print(f"upgrade tx: {tx}")
     print(f"balance from v2: {nre.call(proxy, 'get_balance')}")
 
     account.send(proxy, "reset_balance", calldata=[])
