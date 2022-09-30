@@ -30,7 +30,7 @@ Options:
   --max_fee TEXT      Maximum fee for the transaction. Defaults to 0.
 ```
 
-Example usage with `nre`:
+Example usage in scripts with Nile Runtime Environment:
 ```
 proxy_address = nre.deploy_proxy(["PKEY1", "my_contract_v1", "arg for initializer"])
 ```
@@ -53,7 +53,7 @@ Options:
   --help          Show this message and exit.
 ```
 
-Example usage with `nre`:
+Example usage in scripts with Nile Runtime Environment:
 ```
 tx_hash = nre.upgrade_proxy(["PKEY1", proxy_address, "my_contract_v2"])
 ```
