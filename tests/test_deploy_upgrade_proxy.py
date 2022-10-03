@@ -63,7 +63,7 @@ def check_node(p, seconds, gateway_url):
     reason="Issue in cairo-lang. "
     "See https://github.com/starkware-libs/cairo-lang/issues/27",
 )
-def test_compile():
+def test_deploy_upgrade_proxy():
     contract_v1 = RESOURCES_DIR / "contracts" / "contract.cairo"
     contract_v2 = RESOURCES_DIR / "contracts" / "contract_v2.cairo"
     script = RESOURCES_DIR / "scripts" / "deploy_upgrade_proxy.py"
