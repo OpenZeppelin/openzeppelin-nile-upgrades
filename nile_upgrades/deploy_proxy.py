@@ -15,7 +15,7 @@ from nile_upgrades import declare_impl
 @click.option("--initializer", nargs=1, default="initializer", help="Initializer function name. Defaults to 'initializer'")
 @click.option("--alias", nargs=1, help="Unique identifier for your proxy.")
 @click.option("--max_fee", nargs=1, help="Maximum fee for the transaction. Defaults to 0.")
-def deploy_proxy(contract_name, signer, initializer, initializer_args, alias=None, max_fee=None):
+def deploy_proxy(signer, contract_name, initializer_args, initializer, alias=None, max_fee=None):
     """
     Deploy an upgradeable proxy for an implementation contract.
 

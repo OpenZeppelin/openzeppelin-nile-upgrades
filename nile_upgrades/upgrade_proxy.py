@@ -14,7 +14,7 @@ from nile_upgrades import declare_impl
 @click.argument("proxy_address_or_alias", type=str)
 @click.argument("contract_name", type=str)
 @click.option("--max_fee", nargs=1, help="Maximum fee for the transaction. Defaults to 0.")
-def upgrade_proxy(proxy_address_or_alias, contract_name, signer, max_fee=None):
+def upgrade_proxy(signer, proxy_address_or_alias, contract_name, max_fee=None):
     """
     Upgrade a proxy to a different implementation contract.
 
