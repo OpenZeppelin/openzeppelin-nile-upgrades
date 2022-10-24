@@ -1,6 +1,8 @@
 import click
 import logging
 
+from nile.common import is_alias
+from nile.utils import normalize_number
 from nile.core.account import Account
 from nile.nre import NileRuntimeEnvironment
 from nile import deployments
@@ -25,6 +27,8 @@ def upgrade_proxy(proxy_address_or_alias, contract_name, signer, max_fee=None):
 
     nre = NileRuntimeEnvironment()
 
+    if not is_alias(proxy_address_or_alias):
+        proxy_address_or_alias = normalize_number(proxy_address_or_alias)
     ids = deployments.load(proxy_address_or_alias, nre.network)
     id = next(ids, None)
     if id is None:
@@ -38,12 +42,12 @@ def upgrade_proxy(proxy_address_or_alias, contract_name, signer, max_fee=None):
 
     logging.info(f"⏭️  Upgrading proxy {proxy_address} to class hash {hash}")
     account = Account(signer, nre.network)
-    upgrade_result = account.send(proxy_address, "upgrade", calldata=[int(hash, 16)], max_fee=max_fee)
+    upgrade_result = account.send(proxy_address, "upgrade", calldata=[hash], max_fee=max_fee)
 
     txhash = get_tx_hash(upgrade_result)
     logging.info(f"🧾 Upgrade transaction hash: {txhash}")
 
-    deployments.update(proxy_address, f"artifacts/abis/{contract_name}.json", nre.network)
+    deployments.update_abi(proxy_address, f"artifacts/abis/{contract_name}.json", nre.network)
 
     return txhash
 

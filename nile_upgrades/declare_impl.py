@@ -2,7 +2,7 @@ import logging
 
 from nile.deployments import class_hash_exists
 from nile.core.account import Account
-from nile.utils import get_hash
+from nile.common import get_hash
 
 def declare_impl(nre, contract_name, signer, max_fee):
     """
