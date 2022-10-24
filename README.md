@@ -63,17 +63,14 @@ tx_hash = nre.upgrade_proxy(["PKEY1", proxy_address, "my_contract_v2"])
 ### Installation
 
 1. Install [Poetry](https://python-poetry.org/docs/#installation)
-2. Clone https://github.com/ericglau/nile with branch `upgrades`, e.g.:
-```
-git clone https://github.com/ericglau/nile -b upgrades nile_fork
-```
+2. Clone https://github.com/OpenZeppelin/nile
 3. Clone this project.
 4. From this project's root, setup venv and install dependencies:
 ```
 python3 -m venv env
 source env/bin/activate
 poetry install
-pip3 install -e <your_path_to_nile_fork_from_step_2>
+pip3 install -e <your_path_to_nile_repo_from_step_2>
 pip3 install -e .
 ```
 
