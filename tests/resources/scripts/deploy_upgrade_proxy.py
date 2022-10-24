@@ -1,4 +1,3 @@
-
 from nile.core.account import Account
 from nile.utils import hex_address
 
