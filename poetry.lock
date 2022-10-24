@@ -954,7 +954,7 @@ python-versions = ">=3.8"
 
 [[package]]
 name = "openzeppelin-cairo-contracts"
-version = "0.4.0b0"
+version = "0.4.0"
 description = "Library for secure smart contract development written in Cairo"
 category = "dev"
 optional = false
@@ -1581,7 +1581,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.10"
-content-hash = "0ac5155375a6a572bb3b265368cec81aa531b22121b7b1301e68726aff074fe0"
+content-hash = "6f32729ced30e8cb25e49802294c72236ff3a957751a66802e9ccfb334536174"
 
 [metadata.files]
 aiohttp = [
@@ -2444,8 +2444,8 @@ numpy = [
     {file = "numpy-1.23.3.tar.gz", hash = "sha256:51bf49c0cd1d52be0a240aa66f3458afc4b95d8993d2d04f0d91fa60c10af6cd"},
 ]
 openzeppelin-cairo-contracts = [
-    {file = "openzeppelin-cairo-contracts-0.4.0b0.tar.gz", hash = "sha256:a3cde22171fc435092d30fdf66900b38c22fb8852607f05d2aebbf8b604c6df6"},
-    {file = "openzeppelin_cairo_contracts-0.4.0b0-py3-none-any.whl", hash = "sha256:f830b4985d90122a70950902810ebe2d7252451004168faa5e37b9e2a402de60"},
+    {file = "openzeppelin-cairo-contracts-0.4.0.tar.gz", hash = "sha256:be73033b10631c2ea05e1ed57f9579ec57b59f850c1af072429819c57b7a0b7c"},
+    {file = "openzeppelin_cairo_contracts-0.4.0-py3-none-any.whl", hash = "sha256:c2a6d3271823bc350c9af626ed25099f8caf2ecdec2fc85694818373a00b21ea"},
 ]
 packaging = [
     {file = "packaging-21.3-py3-none-any.whl", hash = "sha256:ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522"},
