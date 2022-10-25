@@ -38,8 +38,8 @@ def deploy_proxy(signer, contract_name, initializer_args, initializer, alias=Non
     return addr
 
 def get_proxy_artifact_path():
-    pt = os.path.dirname(os.path.realpath(__file__)).replace("/nile_upgrades", "")
-    return (f"{pt}/artifacts", f"{pt}/artifacts/abis")
+    package = os.path.dirname(os.path.realpath(__file__))
+    return (f"{package}/artifacts", f"{package}/artifacts/abis")
 
 def get_contract_abi(contract_name):
     return f"{ABIS_DIRECTORY}/{contract_name}.json"
