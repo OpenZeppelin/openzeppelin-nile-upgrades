@@ -16,11 +16,7 @@ import pytest
 from click.testing import CliRunner
 
 from nile.cli import cli
-from nile.common import (
-    ABIS_DIRECTORY,
-    BUILD_DIRECTORY,
-    CONTRACTS_DIRECTORY,
-)
+from nile.common import ABIS_DIRECTORY, BUILD_DIRECTORY, CONTRACTS_DIRECTORY
 
 RESOURCES_DIR = Path(__file__).parent / "resources"
 
@@ -57,6 +53,25 @@ def check_node(p, seconds, gateway_url):
             continue
 
 
+def spawn_gateway():
+    """Spawn process and start node."""
+    # Node timeout
+    seconds = 60
+
+    # Spawn process to start StarkNet local network with specified port
+    # i.e. $ nile node --host localhost --port 5000
+    p = create_process(
+        target=start_node, args=(seconds, ["--host", "localhost", "--port", "5000"])
+    )
+    p.start()
+
+    # Check node heartbeat and assert that it is running
+    status = check_node(p, seconds, "http://127.0.0.1:5000/")
+    assert status == 200
+
+    return p
+
+
 @patch.dict(os.environ, {"PKEY1": "1234"})
 @pytest.mark.xfail(
     sys.version_info >= (3, 10),
@@ -81,8 +96,14 @@ def test_deploy_upgrade_proxy():
     result = CliRunner().invoke(cli, ["compile"])
     assert result.exit_code == 0
 
-    assert {f.name for f in abi_dir.glob("*.json")} == {"contract.json", "contract_v2.json"}
-    assert {f.name for f in build_dir.glob("*.json")} == {"contract.json", "contract_v2.json"}
+    assert {f.name for f in abi_dir.glob("*.json")} == {
+        "contract.json",
+        "contract_v2.json",
+    }
+    assert {f.name for f in build_dir.glob("*.json")} == {
+        "contract.json",
+        "contract_v2.json",
+    }
 
     # Start node
     p = spawn_gateway()
@@ -98,21 +119,3 @@ def test_deploy_upgrade_proxy():
     assert "balance after reset from v2: ['0']" in result.output
 
     p.terminate()
-
-
-def spawn_gateway():
-    # TODO this currently requires starknet-devnet==0.3.1 and openzeppelin-cairo-contracts==0.4.0b to be manually installed
-
-    # Node timeout
-    seconds = 60
-
-    # Spawn process to start StarkNet local network with specified port
-    # i.e. $ nile node --host localhost --port 5000
-    p = create_process(target=start_node, args=(seconds, [ "--host", "localhost", "--port", "5000" ]))
-    p.start()
-
-    # Check node heartbeat and assert that it is running
-    status = check_node(p, seconds, "http://127.0.0.1:5000/")
-    assert status == 200
-
-    return p
