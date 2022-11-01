@@ -1,19 +1,22 @@
-import click
 import logging
 
+import click
+from nile_upgrades import declare_impl
+
+from nile import deployments
 from nile.common import is_alias
-from nile.utils import normalize_number
 from nile.core.account import Account
 from nile.nre import NileRuntimeEnvironment
-from nile import deployments
+from nile.utils import normalize_number
 
-from nile_upgrades import declare_impl
 
 @click.command()
 @click.argument("signer", type=str)
 @click.argument("proxy_address_or_alias", type=str)
 @click.argument("contract_name", type=str)
-@click.option("--max_fee", nargs=1, help="Maximum fee for the transaction. Defaults to 0.")
+@click.option(
+    "--max_fee", nargs=1, help="Maximum fee for the transaction. Defaults to 0."
+)
 def upgrade_proxy(signer, proxy_address_or_alias, contract_name, max_fee=None):
     """
     Upgrade a proxy to a different implementation contract.
@@ -32,9 +35,13 @@ def upgrade_proxy(signer, proxy_address_or_alias, contract_name, max_fee=None):
     ids = deployments.load(proxy_address_or_alias, nre.network)
     id = next(ids, None)
     if id is None:
-        raise Exception(f"Deployment with address or alias {proxy_address_or_alias} not found")
+        raise Exception(
+            f"Deployment with address or alias {proxy_address_or_alias} not found"
+        )
     if next(ids, None) is not None:
-        raise Exception(f"Multiple deployments found with address or alias {proxy_address_or_alias}")
+        raise Exception(
+            f"Multiple deployments found with address or alias {proxy_address_or_alias}"
+        )
 
     proxy_address = id[0]
 
@@ -42,12 +49,16 @@ def upgrade_proxy(signer, proxy_address_or_alias, contract_name, max_fee=None):
 
     logging.info(f"⏭️  Upgrading proxy {proxy_address} to class hash {hash}")
     account = Account(signer, nre.network)
-    upgrade_result = account.send(proxy_address, "upgrade", calldata=[hash], max_fee=max_fee)
+    upgrade_result = account.send(
+        proxy_address, "upgrade", calldata=[hash], max_fee=max_fee
+    )
 
     txhash = get_tx_hash(upgrade_result)
     logging.info(f"🧾 Upgrade transaction hash: {txhash}")
 
-    deployments.update_abi(proxy_address, f"artifacts/abis/{contract_name}.json", nre.network)
+    deployments.update_abi(
+        proxy_address, f"artifacts/abis/{contract_name}.json", nre.network
+    )
 
     return txhash
 

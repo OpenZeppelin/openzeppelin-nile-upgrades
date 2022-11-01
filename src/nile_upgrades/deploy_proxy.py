@@ -1,21 +1,31 @@
-import click
-import os
 import logging
+import os
 
-from nile.nre import NileRuntimeEnvironment
-from nile.common import ABIS_DIRECTORY
+import click
+from nile_upgrades import declare_impl
 from starkware.starknet.compiler.compile import get_selector_from_name
 
-from nile_upgrades import declare_impl
+from nile.common import ABIS_DIRECTORY
+from nile.nre import NileRuntimeEnvironment
+
 
 @click.command()
 @click.argument("signer", type=str)
 @click.argument("contract_name", type=str)
 @click.argument("initializer_args", nargs=-1, type=click.UNPROCESSED)
-@click.option("--initializer", nargs=1, default="initializer", help="Initializer function name. Defaults to 'initializer'")
+@click.option(
+    "--initializer",
+    nargs=1,
+    default="initializer",
+    help="Initializer function name. Defaults to 'initializer'",
+)
 @click.option("--alias", nargs=1, help="Unique identifier for your proxy.")
-@click.option("--max_fee", nargs=1, help="Maximum fee for the transaction. Defaults to 0.")
-def deploy_proxy(signer, contract_name, initializer_args, initializer, alias=None, max_fee=None):
+@click.option(
+    "--max_fee", nargs=1, help="Maximum fee for the transaction. Defaults to 0."
+)
+def deploy_proxy(
+    signer, contract_name, initializer_args, initializer, alias=None, max_fee=None
+):
     """
     Deploy an upgradeable proxy for an implementation contract.
 
@@ -32,14 +42,22 @@ def deploy_proxy(signer, contract_name, initializer_args, initializer, alias=Non
 
     logging.debug(f"Deploying upgradeable proxy...")
     selector = get_selector_from_name(initializer)
-    addr, abi = nre.deploy("Proxy", arguments=[hash, selector, len(initializer_args), *initializer_args], alias=alias, overriding_path=get_proxy_artifact_path(), abi=get_contract_abi(contract_name))
+    addr, abi = nre.deploy(
+        "Proxy",
+        arguments=[hash, selector, len(initializer_args), *initializer_args],
+        alias=alias,
+        overriding_path=get_proxy_artifact_path(),
+        abi=get_contract_abi(contract_name),
+    )
     logging.debug(f"Proxy deployed to address {addr} using ABI {abi}")
 
     return addr
 
+
 def get_proxy_artifact_path():
     package = os.path.dirname(os.path.realpath(__file__))
     return (f"{package}/artifacts", f"{package}/artifacts/abis")
+
 
 def get_contract_abi(contract_name):
     return f"{ABIS_DIRECTORY}/{contract_name}.json"
