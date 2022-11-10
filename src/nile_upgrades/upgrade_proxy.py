@@ -1,13 +1,13 @@
 import logging
-
 import click
-from nile_upgrades import declare_impl
 
 from nile import deployments
 from nile.common import is_alias
 from nile.core.account import Account
 from nile.nre import NileRuntimeEnvironment
 from nile.utils import normalize_number
+
+from nile_upgrades import common
 
 
 @click.command()
@@ -45,25 +45,25 @@ def upgrade_proxy(signer, proxy_address_or_alias, contract_name, max_fee=None):
 
     proxy_address = id[0]
 
-    hash = declare_impl.declare_impl(nre, contract_name, signer, max_fee)
+    impl_class_hash = common.declare_impl(nre, contract_name, signer, max_fee)
 
-    logging.info(f"⏭️  Upgrading proxy {proxy_address} to class hash {hash}")
+    logging.info(f"⏭️  Upgrading proxy {proxy_address} to class hash {impl_class_hash}")
     account = Account(signer, nre.network)
     upgrade_result = account.send(
-        proxy_address, "upgrade", calldata=[hash], max_fee=max_fee
+        proxy_address, "upgrade", calldata=[impl_class_hash], max_fee=max_fee
     )
 
-    txhash = get_tx_hash(upgrade_result)
-    logging.info(f"🧾 Upgrade transaction hash: {txhash}")
+    tx_hash = _get_tx_hash(upgrade_result)
+    logging.info(f"🧾 Upgrade transaction hash: {tx_hash}")
 
     deployments.update_abi(
-        proxy_address, f"artifacts/abis/{contract_name}.json", nre.network
+        proxy_address, common.get_contract_abi(contract_name), nre.network
     )
 
-    return txhash
+    return tx_hash
 
 
-def get_tx_hash(output):
+def _get_tx_hash(output):
     lines = output.splitlines()
     for line in lines:
         if "Transaction hash" in line:
