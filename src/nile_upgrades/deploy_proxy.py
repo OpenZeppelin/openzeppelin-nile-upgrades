@@ -1,12 +1,12 @@
 import logging
 import os
-
 import click
-from nile_upgrades import declare_impl
+
 from starkware.starknet.compiler.compile import get_selector_from_name
 
-from nile.common import ABIS_DIRECTORY
 from nile.nre import NileRuntimeEnvironment
+
+from nile_upgrades import common
 
 
 @click.command()
@@ -38,7 +38,7 @@ def deploy_proxy(
 
     nre = NileRuntimeEnvironment()
 
-    impl_class_hash = declare_impl.declare_impl(nre, contract_name, signer, max_fee)
+    impl_class_hash = common.declare_impl(nre, contract_name, signer, max_fee)
 
     logging.debug(f"Deploying upgradeable proxy...")
     selector = get_selector_from_name(initializer)
@@ -46,18 +46,14 @@ def deploy_proxy(
         "Proxy",
         arguments=[impl_class_hash, selector, len(initializer_args), *initializer_args],
         alias=alias,
-        overriding_path=get_proxy_artifact_path(),
-        abi=get_contract_abi(contract_name),
+        overriding_path=_get_proxy_artifact_path(),
+        abi=common.get_contract_abi(contract_name),
     )
     logging.debug(f"Proxy deployed to address {addr} using ABI {abi}")
 
     return addr
 
 
-def get_proxy_artifact_path():
+def _get_proxy_artifact_path():
     package = os.path.dirname(os.path.realpath(__file__))
     return (f"{package}/artifacts", f"{package}/artifacts/abis")
-
-
-def get_contract_abi(contract_name):
-    return f"{ABIS_DIRECTORY}/{contract_name}.json"

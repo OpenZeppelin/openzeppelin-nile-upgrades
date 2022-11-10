@@ -1,6 +1,6 @@
 import logging
 
-from nile.common import get_hash
+from nile.common import get_hash, ABIS_DIRECTORY
 from nile.core.account import Account
 from nile.deployments import class_hash_exists
 
@@ -23,3 +23,7 @@ def declare_impl(nre, contract_name, signer, max_fee):
         logging.debug(f"Implementation declared with hash {declared_hash}")
 
     return impl_class_hash
+
+
+def get_contract_abi(contract_name):
+    return f"{ABIS_DIRECTORY}/{contract_name}.json"
