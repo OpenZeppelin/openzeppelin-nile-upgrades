@@ -45,22 +45,22 @@ def upgrade_proxy(signer, proxy_address_or_alias, contract_name, max_fee=None):
 
     proxy_address = id[0]
 
-    hash = declare_impl.declare_impl(nre, contract_name, signer, max_fee)
+    impl_class_hash = declare_impl.declare_impl(nre, contract_name, signer, max_fee)
 
-    logging.info(f"⏭️  Upgrading proxy {proxy_address} to class hash {hash}")
+    logging.info(f"⏭️  Upgrading proxy {proxy_address} to class hash {impl_class_hash}")
     account = Account(signer, nre.network)
     upgrade_result = account.send(
-        proxy_address, "upgrade", calldata=[hash], max_fee=max_fee
+        proxy_address, "upgrade", calldata=[impl_class_hash], max_fee=max_fee
     )
 
-    txhash = get_tx_hash(upgrade_result)
-    logging.info(f"🧾 Upgrade transaction hash: {txhash}")
+    tx_hash = get_tx_hash(upgrade_result)
+    logging.info(f"🧾 Upgrade transaction hash: {tx_hash}")
 
     deployments.update_abi(
         proxy_address, f"artifacts/abis/{contract_name}.json", nre.network
     )
 
-    return txhash
+    return tx_hash
 
 
 def get_tx_hash(output):
