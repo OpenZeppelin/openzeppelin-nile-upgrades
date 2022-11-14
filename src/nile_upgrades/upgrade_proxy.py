@@ -5,7 +5,7 @@ from nile import deployments
 from nile.common import is_alias
 from nile.core.account import Account
 from nile.nre import NileRuntimeEnvironment
-from nile.utils import normalize_number
+from nile.utils import normalize_number, hex_class_hash
 
 from nile_upgrades import common
 
@@ -47,7 +47,7 @@ def upgrade_proxy(signer, proxy_address_or_alias, contract_name, max_fee=None):
 
     impl_class_hash = common.declare_impl(nre, contract_name, signer, max_fee)
 
-    logging.info(f"⏭️  Upgrading proxy {proxy_address} to class hash {impl_class_hash}")
+    logging.info(f"⏭️  Upgrading proxy {proxy_address} to class hash {hex_class_hash(impl_class_hash)}")
     account = Account(signer, nre.network)
     upgrade_result = account.send(
         proxy_address, "upgrade", calldata=[impl_class_hash], max_fee=max_fee
