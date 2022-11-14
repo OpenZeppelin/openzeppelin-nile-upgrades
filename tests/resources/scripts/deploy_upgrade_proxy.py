@@ -7,12 +7,12 @@ def run(nre):
 
     proxy = nre.deploy_proxy([signer, "contract", hex_address(account.address)])
 
-    account.send(proxy, "increase_balance", calldata=['1'], max_fee=None)
+    account.send(proxy, "increase_balance", calldata=['1'])
     print(f"balance from v1: {nre.call(proxy, 'get_balance')}")
 
     tx = nre.upgrade_proxy([signer, hex_address(proxy), "contract_v2"])
     print(f"upgrade tx: {tx}")
     print(f"balance from v2: {nre.call(proxy, 'get_balance')}")
 
-    account.send(proxy, "reset_balance", calldata=[], max_fee=None)
+    account.send(proxy, "reset_balance", calldata=[])
     print(f"balance after reset from v2: {nre.call(proxy, 'get_balance')}")
