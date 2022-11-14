@@ -47,8 +47,10 @@ starknet-devnet = ">= 0.3.1, <0.3.4"
 openzeppelin-cairo-contracts = "^0.4.0"
 cairo-nile = "^0.10.0"
 
-# We need to specify that click commands are Poetry entrypoints of type `nile_plugins`. Do not modify this
-[tool.poetry.plugins."nile_plugins"]
-# command name and location <command_name> = <package_method_location>
+[tool.poetry.plugins."nile_plugins.cli"]
+"deploy_proxy" = "nile_upgrades.deploy_proxy.deploy_proxy"
+"upgrade_proxy" = "nile_upgrades.upgrade_proxy.upgrade_proxy"
+
+[tool.poetry.plugins."nile_plugins.nre"]
 "deploy_proxy" = "nile_upgrades.deploy_proxy.deploy_proxy"
 "upgrade_proxy" = "nile_upgrades.upgrade_proxy.upgrade_proxy"
