@@ -5,6 +5,7 @@ import click
 from starkware.starknet.compiler.compile import get_selector_from_name
 
 from nile.nre import NileRuntimeEnvironment
+from nile.utils import hex_address
 
 from nile_upgrades import common
 
@@ -49,7 +50,7 @@ def deploy_proxy(
         overriding_path=_get_proxy_artifact_path(),
         abi=common.get_contract_abi(contract_name),
     )
-    logging.debug(f"Proxy deployed to address {addr} using ABI {abi}")
+    logging.debug(f"Proxy deployed to address {hex_address(addr)} using ABI {abi}")
 
     return addr
 
