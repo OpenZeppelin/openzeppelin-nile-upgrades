@@ -1,5 +1,4 @@
 import logging
-import click
 
 from nile import deployments
 from nile.common import is_alias
@@ -10,22 +9,17 @@ from nile.utils import normalize_number, hex_class_hash, hex_address
 from nile_upgrades import common
 
 
-@click.command()
-@click.argument("signer", type=str)
-@click.argument("proxy_address_or_alias", type=str)
-@click.argument("contract_name", type=str)
-@click.option(
-    "--max_fee", nargs=1, help="Maximum fee for the transaction. Defaults to 0."
-)
-def upgrade_proxy(signer, proxy_address_or_alias, contract_name, max_fee=None):
+def upgrade_proxy(signer, proxy_address_or_alias, contract_name, max_fee=None, standalone_mode=None):
     """
     Upgrade a proxy to a different implementation contract.
 
-    SIGNER - private key alias for the Account to use.
+    signer - private key alias for the Account to use.
 
-    PROXY_ADDRESS_OR_ALIAS - the proxy address or alias.
+    proxy_address_or_alias - the proxy address or alias.
 
-    CONTRACT_NAME - the name of the implementation contract to upgrade to.
+    contract_name - the name of the implementation contract to upgrade to.
+
+    max_fee - Maximum fee for the transaction. Defaults to 0.
     """
 
     nre = NileRuntimeEnvironment()

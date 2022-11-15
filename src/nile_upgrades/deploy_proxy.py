@@ -1,6 +1,5 @@
 import logging
 import os
-import click
 
 from starkware.starknet.compiler.compile import get_selector_from_name
 
@@ -10,31 +9,23 @@ from nile.utils import hex_address
 from nile_upgrades import common
 
 
-@click.command()
-@click.argument("signer", type=str)
-@click.argument("contract_name", type=str)
-@click.argument("initializer_args", nargs=-1, type=click.UNPROCESSED)
-@click.option(
-    "--initializer",
-    nargs=1,
-    default="initializer",
-    help="Initializer function name. Defaults to 'initializer'",
-)
-@click.option("--alias", nargs=1, help="Unique identifier for your proxy.")
-@click.option(
-    "--max_fee", nargs=1, help="Maximum fee for the transaction. Defaults to 0."
-)
 def deploy_proxy(
-    signer, contract_name, initializer_args, initializer, alias=None, max_fee=None
+    signer, contract_name, initializer_args, initializer='initializer', alias=None, max_fee=None, standalone_mode=None
 ):
     """
     Deploy an upgradeable proxy for an implementation contract.
 
-    SIGNER - private key alias for the Account to use.
+    signer - private key alias for the Account to use.
 
-    CONTRACT_NAME - the name of the implementation contract.
+    contract_name - the name of the implementation contract.
 
-    INITIALIZER_ARGS - arguments for the initializer function.
+    initializer_args - array of arguments for the initializer function.
+
+    initializer - initializer function name. Defaults to 'initializer'
+
+    alias - Unique identifier for your proxy.
+
+    max_fee - Maximum fee for the transaction. Defaults to 0.
     """
 
     nre = NileRuntimeEnvironment()
