@@ -15,17 +15,17 @@ def deploy_proxy(
     """
     Deploy an upgradeable proxy for an implementation contract.
 
-    signer - private key alias for the Account to use.
+    `signer` - private key alias for the Account to use.
 
-    contract_name - the name of the implementation contract.
+    `contract_name` - the name of the implementation contract.
 
-    initializer_args - array of arguments for the initializer function.
+    `initializer_args` - array of arguments for the initializer function.
 
-    initializer - initializer function name. Defaults to 'initializer'
+    `initializer` - initializer function name. Defaults to `'initializer'`.
 
-    alias - Unique identifier for your proxy.
+    `alias` - Unique identifier for your proxy. Defaults to `None`.
 
-    max_fee - Maximum fee for the transaction. Defaults to 0.
+    `max_fee` - Maximum fee for the transaction. Defaults to `None`.
     """
 
     nre = NileRuntimeEnvironment()

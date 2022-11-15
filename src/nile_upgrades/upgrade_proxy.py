@@ -13,13 +13,13 @@ def upgrade_proxy(signer, proxy_address_or_alias, contract_name, max_fee=None, s
     """
     Upgrade a proxy to a different implementation contract.
 
-    signer - private key alias for the Account to use.
+    `signer` - private key alias for the Account to use.
 
-    proxy_address_or_alias - the proxy address or alias.
+    `proxy_address_or_alias` - the proxy address or alias.
 
-    contract_name - the name of the implementation contract to upgrade to.
+    `contract_name` - the name of the implementation contract to upgrade to.
 
-    max_fee - Maximum fee for the transaction. Defaults to 0.
+    `max_fee` - Maximum fee for the transaction. Defaults to `None`.
     """
 
     nre = NileRuntimeEnvironment()
