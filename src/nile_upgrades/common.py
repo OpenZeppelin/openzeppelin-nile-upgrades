@@ -5,17 +5,17 @@ from nile.core.account import Account
 from nile.deployments import class_hash_exists, normalize_number
 
 
-def declare_impl(nre, contract_name, signer, max_fee):
+def declare_impl(network, contract_name, signer, max_fee):
     """
     Declare an implementation contract.
     """
     logging.debug(f"Declaring implementation {contract_name}...")
     padded_hash = get_hash(contract_name=contract_name)
     class_hash = normalize_number(padded_hash)
-    if class_hash_exists(class_hash, nre.network):
+    if class_hash_exists(class_hash, network):
         logging.debug(f"Implementation with hash {padded_hash} already exists")
     else:
-        account = Account(signer, nre.network)
+        account = Account(signer, network)
         declared_hash = account.declare(contract_name, max_fee=max_fee)
         if padded_hash != declared_hash:
             raise Exception(
