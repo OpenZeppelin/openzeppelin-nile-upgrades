@@ -21,12 +21,6 @@ from nile.common import ABIS_DIRECTORY, BUILD_DIRECTORY, CONTRACTS_DIRECTORY
 RESOURCES_DIR = Path(__file__).parent / "resources"
 
 
-@pytest.fixture(autouse=True)
-def tmp_working_dir(monkeypatch, tmp_path):
-    monkeypatch.chdir(tmp_path)
-    return tmp_path
-
-
 def create_process(target, args):
     """Spawns another process in Python."""
     p = Process(target=target, args=args)
