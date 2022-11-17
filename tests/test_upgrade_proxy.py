@@ -89,11 +89,9 @@ def test_load_deployment(
 def test_load_deployment_not_found(
     mock_load, identifier, exp_identifier
 ):
-    try:
+    with pytest.raises(Exception) as e:
         _load_deployment(identifier, NETWORK)
-        raise AssertionError("_load_deployment expected to fail due to address not found")
-    except Exception as e:
-        assert f"Deployment with address or alias {exp_identifier} not found" in str(e)
+    assert f"Deployment with address or alias {exp_identifier} not found" in str(e.value)
 
 
 @patch("nile.deployments.load", return_value=iter([(PROXY_ADDR_INT, IMPL_ABI), (PROXY_ADDR_INT, IMPL_ABI)]))
