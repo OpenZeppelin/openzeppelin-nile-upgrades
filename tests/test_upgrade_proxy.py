@@ -81,12 +81,8 @@ def test_load_deployment(
 @pytest.mark.parametrize(
     "identifier, exp_identifier",
     [
-        (
-            ALIAS, ALIAS
-        ),
-        (
-            PROXY_ADDR_INT, PROXY_ADDR
-        )
+        (ALIAS, ALIAS),
+        (PROXY_ADDR_INT, PROXY_ADDR)
     ]
 )
 @patch("nile.deployments.load", return_value=iter([]))
