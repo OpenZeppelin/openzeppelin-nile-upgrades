@@ -1,4 +1,5 @@
 """Tests for deploying and upgrading a proxy."""
+import asyncio
 import os
 import shutil
 import sys
@@ -27,7 +28,11 @@ def create_process(target, args):
     return p
 
 
-async def start_node(seconds, node_args):
+def start_node(seconds, node_args):
+    asyncio.run(start_node_with_timer(seconds, node_args))
+
+
+async def start_node_with_timer(seconds, node_args):
     """Start node with host and port specified in node_args and life in seconds."""
     # Timed kill command with SIGINT to close Node process
     Timer(seconds, lambda: kill(getpid(), SIGINT)).start()
@@ -47,7 +52,7 @@ def check_node(p, seconds, gateway_url):
             continue
 
 
-async def spawn_gateway():
+def spawn_gateway():
     """Spawn process and start node."""
     # Node timeout
     seconds = 60
@@ -55,9 +60,8 @@ async def spawn_gateway():
     # Spawn process to start StarkNet local network with specified port
     # i.e. $ nile node --host localhost --port 5000
     args = ["--host", "localhost", "--port", "5000"]
-    init_node = await start_node(seconds, args)
     p = create_process(
-        target=init_node, args=(seconds, args)
+        target=start_node, args=(seconds, args)
     )
     p.start()
 
@@ -102,7 +106,7 @@ async def test_deploy_upgrade_proxy():
     }
 
     # Start node
-    p = await spawn_gateway()
+    p = spawn_gateway()
 
     # Run test script
     with patch.dict(os.environ, {"PKEY1": "1234"}, clear=False):
