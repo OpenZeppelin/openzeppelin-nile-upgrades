@@ -13,7 +13,7 @@ from urllib.error import URLError
 from urllib.request import urlopen
 
 import pytest
-from click.testing import CliRunner
+from asyncclick.testing import CliRunner
 
 from nile.cli import cli
 from nile.common import ABIS_DIRECTORY, BUILD_DIRECTORY, CONTRACTS_DIRECTORY
@@ -27,11 +27,11 @@ def create_process(target, args):
     return p
 
 
-def start_node(seconds, node_args):
+async def start_node(seconds, node_args):
     """Start node with host and port specified in node_args and life in seconds."""
     # Timed kill command with SIGINT to close Node process
     Timer(seconds, lambda: kill(getpid(), SIGINT)).start()
-    CliRunner().invoke(cli, ["node", *node_args])
+    await CliRunner().invoke(cli, ["node", *node_args])
 
 
 def check_node(p, seconds, gateway_url):
@@ -47,15 +47,17 @@ def check_node(p, seconds, gateway_url):
             continue
 
 
-def spawn_gateway():
+async def spawn_gateway():
     """Spawn process and start node."""
     # Node timeout
     seconds = 60
 
     # Spawn process to start StarkNet local network with specified port
     # i.e. $ nile node --host localhost --port 5000
+    args = ["--host", "localhost", "--port", "5000"]
+    init_node = await start_node(seconds, args)
     p = create_process(
-        target=start_node, args=(seconds, ["--host", "localhost", "--port", "5000"])
+        target=init_node, args=(seconds, args)
     )
     p.start()
 
@@ -66,13 +68,14 @@ def spawn_gateway():
     return p
 
 
+@pytest.mark.asyncio
 @patch.dict(os.environ, {"PKEY1": "1234"})
 @pytest.mark.xfail(
     sys.version_info >= (3, 10),
     reason="Issue in cairo-lang. "
     "See https://github.com/starkware-libs/cairo-lang/issues/27",
 )
-def test_deploy_upgrade_proxy():
+async def test_deploy_upgrade_proxy():
     contract_v1 = RESOURCES_DIR / "contracts" / "contract.cairo"
     contract_v2 = RESOURCES_DIR / "contracts" / "contract_v2.cairo"
     script = RESOURCES_DIR / "scripts" / "deploy_upgrade_proxy.py"
@@ -87,7 +90,7 @@ def test_deploy_upgrade_proxy():
     build_dir = Path(BUILD_DIRECTORY)
 
     # Compile contracts
-    result = CliRunner().invoke(cli, ["compile"])
+    result = await CliRunner().invoke(cli, ["compile"])
     assert result.exit_code == 0
 
     assert {f.name for f in abi_dir.glob("*.json")} == {
@@ -100,10 +103,10 @@ def test_deploy_upgrade_proxy():
     }
 
     # Start node
-    p = spawn_gateway()
+    p = await spawn_gateway()
 
     # Run test script
-    result = CliRunner().invoke(cli, ["run", str(script)])
+    result = await CliRunner().invoke(cli, ["run", str(script)])
     assert result.exit_code == 0
 
     # Check script output

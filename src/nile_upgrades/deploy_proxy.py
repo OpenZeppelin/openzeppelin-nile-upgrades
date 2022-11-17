@@ -8,7 +8,7 @@ from nile.utils import hex_address
 from nile_upgrades.common import declare_impl, get_contract_abi
 
 
-def deploy_proxy(
+async def deploy_proxy(
     nre, signer, contract_name, initializer_args, initializer='initializer', alias=None, max_fee=None, standalone_mode=None
 ):
     """
@@ -29,11 +29,11 @@ def deploy_proxy(
     `max_fee` - Maximum fee for the transaction. Defaults to `None`.
     """
 
-    impl_class_hash = declare_impl(nre.network, contract_name, signer, max_fee)
+    impl_class_hash = await declare_impl(nre.network, contract_name, signer, max_fee)
 
     logging.debug(f"Deploying upgradeable proxy...")
     selector = get_selector_from_name(initializer)
-    addr, abi = nre.deploy(
+    addr, abi = await nre.deploy(
         "Proxy",
         arguments=[impl_class_hash, selector, len(initializer_args), *initializer_args],
         alias=alias,

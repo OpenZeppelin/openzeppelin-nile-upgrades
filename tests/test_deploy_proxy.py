@@ -1,8 +1,9 @@
 """Tests for deploy proxy."""
 import logging
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 from nile.nre import NileRuntimeEnvironment
+import pytest
 from nile_upgrades.common import get_contract_abi
 
 from nile_upgrades.deploy_proxy import deploy_proxy
@@ -25,34 +26,36 @@ ALIAS = "my_alias"
 MAX_FEE = 100
 
 
+@pytest.mark.asyncio
 @patch("nile_upgrades.deploy_proxy.declare_impl", return_value=CLASS_HASH)
 @patch("nile_upgrades.deploy_proxy.get_selector_from_name", return_value=SELECTOR)
-@patch("nile.nre.NileRuntimeEnvironment.deploy", return_value=(PROXY_ADDR_INT, IMPL_ABI))
 @patch("nile_upgrades.deploy_proxy._get_proxy_artifact_path", return_value=PROXY_ARTIFACT_PATH)
-def test_deploy_proxy(
-    mock_get_proxy_artifact_path, mock_deploy, mock_get_selector, mock_declare_impl, caplog
+async def test_deploy_proxy(
+    mock_get_proxy_artifact_path, mock_get_selector, mock_declare_impl, caplog
 ):
     logging.getLogger().setLevel(logging.DEBUG)
 
-    result = deploy_proxy(NileRuntimeEnvironment(), SIGNER, CONTRACT, ARGS);
-    assert result == PROXY_ADDR_INT
+    with patch("nile.nre.NileRuntimeEnvironment.deploy", new=AsyncMock(return_value=(PROXY_ADDR_INT, IMPL_ABI))) as mock_deploy:
+        result = await deploy_proxy(NileRuntimeEnvironment(), SIGNER, CONTRACT, ARGS);
+        assert result == PROXY_ADDR_INT
 
-    _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_impl, caplog, "initializer", None, None)
+        _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_impl, caplog, "initializer", None, None)
 
 
+@pytest.mark.asyncio
 @patch("nile_upgrades.deploy_proxy.declare_impl", return_value=CLASS_HASH)
 @patch("nile_upgrades.deploy_proxy.get_selector_from_name", return_value=SELECTOR)
-@patch("nile.nre.NileRuntimeEnvironment.deploy", return_value=(PROXY_ADDR_INT, IMPL_ABI))
 @patch("nile_upgrades.deploy_proxy._get_proxy_artifact_path", return_value=PROXY_ARTIFACT_PATH)
-def test_deploy_proxy_all_opts(
-    mock_get_proxy_artifact_path, mock_deploy, mock_get_selector, mock_declare_impl, caplog
+async def test_deploy_proxy_all_opts(
+    mock_get_proxy_artifact_path, mock_get_selector, mock_declare_impl, caplog
 ):
     logging.getLogger().setLevel(logging.DEBUG)
 
-    result = deploy_proxy(NileRuntimeEnvironment(), SIGNER, CONTRACT, ARGS, CUSTOM_INIT, ALIAS, MAX_FEE);
-    assert result == PROXY_ADDR_INT
+    with patch("nile.nre.NileRuntimeEnvironment.deploy", new=AsyncMock(return_value=(PROXY_ADDR_INT, IMPL_ABI))) as mock_deploy:
+        result = await deploy_proxy(NileRuntimeEnvironment(), SIGNER, CONTRACT, ARGS, CUSTOM_INIT, ALIAS, MAX_FEE);
+        assert result == PROXY_ADDR_INT
 
-    _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_impl, caplog, CUSTOM_INIT, ALIAS, MAX_FEE)
+        _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_impl, caplog, CUSTOM_INIT, ALIAS, MAX_FEE)
 
 
 def _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_impl, caplog, initializer, alias, max_fee):

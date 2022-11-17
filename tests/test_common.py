@@ -16,40 +16,43 @@ PADDED_HASH = "0x000000000000000000000000000000000000000000000000000000000000010
 WRONG_HASH = "0x000000000000000000000000000000000000000000000000000000000000011"
 
 
+@pytest.mark.asyncio
 @patch("nile_upgrades.common.get_hash", return_value=PADDED_HASH)
 @patch("nile_upgrades.common.class_hash_exists", return_value=True)
-def test_declare_impl_already_exists(
+async def test_declare_impl_already_exists(
     mock_class_hash_exists, mock_get_hash, caplog
 ):
     logging.getLogger().setLevel(logging.DEBUG)
 
-    result = declare_impl(NETWORK, CONTRACT, SIGNER, None);
+    result = await declare_impl(NETWORK, CONTRACT, SIGNER, None);
     assert result == CLASS_HASH
 
     # check logs
     assert f"Implementation with hash {PADDED_HASH} already exists" in caplog.text
 
 
+@pytest.mark.asyncio
 @patch("nile_upgrades.common.get_hash", return_value=PADDED_HASH)
 @patch("nile_upgrades.common.class_hash_exists", return_value=False)
 @patch("nile.core.account.Account.declare", return_value=WRONG_HASH)
-def test_declare_impl_not_match(
+async def test_declare_impl_not_match(
     mock_declare, mock_class_hash_exists, mock_get_hash, caplog
 ):
     with pytest.raises(Exception) as e:
-        declare_impl(NETWORK, CONTRACT, SIGNER, None);
+        await declare_impl(NETWORK, CONTRACT, SIGNER, None);
     assert f"Declared hash {WRONG_HASH} does not match expected hash {PADDED_HASH}" in str(e.value)
 
 
+@pytest.mark.asyncio
 @patch("nile_upgrades.common.get_hash", return_value=PADDED_HASH)
 @patch("nile_upgrades.common.class_hash_exists", return_value=False)
 @patch("nile.core.account.Account.declare", return_value=PADDED_HASH)
-def test_declare_impl(
+async def test_declare_impl(
     mock_declare, mock_class_hash_exists, mock_get_hash, caplog
 ):
     logging.getLogger().setLevel(logging.DEBUG)
 
-    result = declare_impl(NETWORK, CONTRACT, SIGNER, None);
+    result = await declare_impl(NETWORK, CONTRACT, SIGNER, None);
     assert result == CLASS_HASH
 
     # check logs

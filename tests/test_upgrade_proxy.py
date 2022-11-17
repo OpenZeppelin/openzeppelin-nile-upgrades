@@ -28,30 +28,32 @@ MAX_FEE = 100
 TX_HASH = "0xA"
 
 
+@pytest.mark.asyncio
 @patch("nile_upgrades.upgrade_proxy._load_deployment", return_value=PROXY_ADDR_INT)
 @patch("nile_upgrades.upgrade_proxy.declare_impl", return_value=CLASS_HASH)
 @patch("nile.core.account.Account.send", return_value=f"Transaction hash: {TX_HASH}")
 @patch("nile.deployments.update_abi")
-def test_upgrade_proxy(
+async def test_upgrade_proxy(
     mock_update_abi, mock_send, mock_declare_impl, mock_load_deployment, caplog
 ):
     logging.getLogger().setLevel(logging.INFO)
 
-    upgrade_proxy(NileRuntimeEnvironment(), SIGNER, PROXY_ADDR, CONTRACT)
+    await upgrade_proxy(NileRuntimeEnvironment(), SIGNER, PROXY_ADDR, CONTRACT)
 
     _assert_calls_and_logs(mock_update_abi, mock_send, caplog, None)
 
 
+@pytest.mark.asyncio
 @patch("nile_upgrades.upgrade_proxy._load_deployment", return_value=PROXY_ADDR_INT)
 @patch("nile_upgrades.upgrade_proxy.declare_impl", return_value=CLASS_HASH)
 @patch("nile.core.account.Account.send", return_value=f"Transaction hash: {TX_HASH}")
 @patch("nile.deployments.update_abi")
-def test_upgrade_proxy_all_opts(
+async def test_upgrade_proxy_all_opts(
     mock_update_abi, mock_send, mock_declare_impl, mock_load_deployment, caplog
 ):
     logging.getLogger().setLevel(logging.INFO)
 
-    upgrade_proxy(NileRuntimeEnvironment(), SIGNER, PROXY_ADDR, CONTRACT, MAX_FEE)
+    await upgrade_proxy(NileRuntimeEnvironment(), SIGNER, PROXY_ADDR, CONTRACT, MAX_FEE)
 
     _assert_calls_and_logs(mock_update_abi, mock_send, caplog, MAX_FEE)
 

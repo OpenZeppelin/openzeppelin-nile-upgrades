@@ -8,7 +8,7 @@ from nile.utils import normalize_number, hex_class_hash, hex_address
 from nile_upgrades.common import declare_impl, get_contract_abi
 
 
-def upgrade_proxy(
+async def upgrade_proxy(
     nre, signer, proxy_address_or_alias, contract_name, max_fee=None, standalone_mode=None
 ):
     """
@@ -27,11 +27,11 @@ def upgrade_proxy(
 
     proxy_address = _load_deployment(proxy_address_or_alias, nre.network)
 
-    impl_class_hash = declare_impl(nre.network, contract_name, signer, max_fee)
+    impl_class_hash = await declare_impl(nre.network, contract_name, signer, max_fee)
 
     logging.info(f"⏭️  Upgrading proxy {hex_address(proxy_address)} to class hash {hex_class_hash(impl_class_hash)}")
-    account = Account(signer, nre.network)
-    upgrade_result = account.send(
+    account = await Account(signer, nre.network)
+    upgrade_result = await account.send(
         proxy_address, "upgrade", calldata=[impl_class_hash], max_fee=max_fee
     )
 
