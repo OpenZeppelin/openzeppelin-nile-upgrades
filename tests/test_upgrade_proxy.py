@@ -98,22 +98,18 @@ def test_load_deployment_not_found(
 def test_load_deployment_multiple_address(
     mock_load
 ):
-    try:
+    with pytest.raises(Exception) as e:
         _load_deployment(PROXY_ADDR_INT, NETWORK)
-        raise AssertionError("_load_deployment expected to fail due to address not found")
-    except Exception as e:
-        assert f"Multiple deployments found with address or alias {PROXY_ADDR}" in str(e)
+    assert f"Multiple deployments found with address or alias {PROXY_ADDR}" in str(e.value)
 
 
 @patch("nile.deployments.load", return_value=iter([(PROXY_ADDR_INT, IMPL_ABI), (PROXY_ADDR_INT, IMPL_ABI)]))
 def test_load_deployment_multiple_alias(
     mock_load
 ):
-    try:
+    with pytest.raises(Exception) as e:
         _load_deployment(ALIAS, NETWORK)
-        raise AssertionError("_load_deployment expected to fail due to address not found")
-    except Exception as e:
-        assert f"Multiple deployments found with address or alias {ALIAS}" in str(e)
+    assert f"Multiple deployments found with address or alias {ALIAS}" in str(e.value)
 
 
 def test_get_tx_hash():

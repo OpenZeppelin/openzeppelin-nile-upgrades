@@ -2,6 +2,8 @@
 import logging
 from unittest.mock import patch
 
+import pytest
+
 from nile_upgrades.common import declare_impl, get_contract_abi
 
 
@@ -34,11 +36,9 @@ def test_declare_impl_already_exists(
 def test_declare_impl_not_match(
     mock_declare, mock_class_hash_exists, mock_get_hash, caplog
 ):
-    try:
+    with pytest.raises(Exception) as e:
         declare_impl(NETWORK, CONTRACT, SIGNER, None);
-        raise AssertionError("declare_impl expected to fail due to mismatched class hash")
-    except Exception as e:
-        assert f"Declared hash {WRONG_HASH} does not match expected hash {PADDED_HASH}" in str(e)
+    assert f"Declared hash {WRONG_HASH} does not match expected hash {PADDED_HASH}" in str(e.value)
 
 
 @patch("nile_upgrades.common.get_hash", return_value=PADDED_HASH)
