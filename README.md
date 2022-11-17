@@ -40,7 +40,7 @@ def deploy_proxy(
 
 Example usage:
 ```
-proxy_address = nre.deploy_proxy("PKEY1", "my_contract_v1", ["arg for initializer"])
+proxy_address = nre.deploy_proxy(nre, "PKEY1", "my_contract_v1", ["arg for initializer"])
 ```
 
 ### `upgrade_proxy`  
