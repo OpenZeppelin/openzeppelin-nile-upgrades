@@ -69,7 +69,6 @@ async def spawn_gateway():
 
 
 @pytest.mark.asyncio
-@patch.dict(os.environ, {"PKEY1": "1234"})
 @pytest.mark.xfail(
     sys.version_info >= (3, 10),
     reason="Issue in cairo-lang. "
@@ -106,13 +105,14 @@ async def test_deploy_upgrade_proxy():
     p = await spawn_gateway()
 
     # Run test script
-    result = await CliRunner().invoke(cli, ["run", str(script)])
-    assert result.exit_code == 0
+    with patch.dict(os.environ, {"PKEY1": "1234"}, clear=False):
+        result = await CliRunner().invoke(cli, ["run", str(script)])
+        assert result.exit_code == 0
 
-    # Check script output
-    assert "balance from v1: ['1']" in result.output
-    assert "upgrade tx: 0x" in result.output
-    assert "balance from v2: ['1']" in result.output
-    assert "balance after reset from v2: ['0']" in result.output
+        # Check script output
+        assert "balance from v1: 1" in result.output
+        assert "upgrade tx: 0x" in result.output
+        assert "balance from v2: 1" in result.output
+        assert "balance after reset from v2: 0" in result.output
 
     p.terminate()
