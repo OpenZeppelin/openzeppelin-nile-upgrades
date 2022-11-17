@@ -65,7 +65,7 @@ def upgrade_proxy(
 
 Example usage:
 ```
-tx_hash = nre.upgrade_proxy("PKEY1", proxy_address, "my_contract_v2")
+tx_hash = nre.upgrade_proxy(nre, "PKEY1", proxy_address, "my_contract_v2")
 ```
 
 ## Contribute
