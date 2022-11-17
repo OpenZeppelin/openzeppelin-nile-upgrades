@@ -5,7 +5,7 @@ from starkware.starknet.compiler.compile import get_selector_from_name
 
 from nile.utils import hex_address
 
-from nile_upgrades import common
+from nile_upgrades.common import declare_impl, get_contract_abi
 
 
 def deploy_proxy(
@@ -29,7 +29,7 @@ def deploy_proxy(
     `max_fee` - Maximum fee for the transaction. Defaults to `None`.
     """
 
-    impl_class_hash = common.declare_impl(nre.network, contract_name, signer, max_fee)
+    impl_class_hash = declare_impl(nre.network, contract_name, signer, max_fee)
 
     logging.debug(f"Deploying upgradeable proxy...")
     selector = get_selector_from_name(initializer)
@@ -38,7 +38,7 @@ def deploy_proxy(
         arguments=[impl_class_hash, selector, len(initializer_args), *initializer_args],
         alias=alias,
         overriding_path=_get_proxy_artifact_path(),
-        abi=common.get_contract_abi(contract_name),
+        abi=get_contract_abi(contract_name),
     )
     logging.debug(f"Proxy deployed to address {hex_address(addr)} using ABI {abi}")
 

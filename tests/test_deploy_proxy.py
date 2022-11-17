@@ -25,7 +25,7 @@ ALIAS = "my_alias"
 MAX_FEE = 100
 
 
-@patch("nile_upgrades.common.declare_impl", return_value=CLASS_HASH)
+@patch("nile_upgrades.deploy_proxy.declare_impl", return_value=CLASS_HASH)
 @patch("nile_upgrades.deploy_proxy.get_selector_from_name", return_value=SELECTOR)
 @patch("nile.nre.NileRuntimeEnvironment.deploy", return_value=(PROXY_ADDR_INT, IMPL_ABI))
 @patch("nile_upgrades.deploy_proxy._get_proxy_artifact_path", return_value=PROXY_ARTIFACT_PATH)
@@ -40,7 +40,7 @@ def test_deploy_proxy(
     _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_impl, caplog, "initializer", None, None)
 
 
-@patch("nile_upgrades.common.declare_impl", return_value=CLASS_HASH)
+@patch("nile_upgrades.deploy_proxy.declare_impl", return_value=CLASS_HASH)
 @patch("nile_upgrades.deploy_proxy.get_selector_from_name", return_value=SELECTOR)
 @patch("nile.nre.NileRuntimeEnvironment.deploy", return_value=(PROXY_ADDR_INT, IMPL_ABI))
 @patch("nile_upgrades.deploy_proxy._get_proxy_artifact_path", return_value=PROXY_ARTIFACT_PATH)

@@ -29,7 +29,7 @@ TX_HASH = "0xA"
 
 
 @patch("nile_upgrades.upgrade_proxy._load_deployment", return_value=PROXY_ADDR_INT)
-@patch("nile_upgrades.common.declare_impl", return_value=CLASS_HASH)
+@patch("nile_upgrades.upgrade_proxy.declare_impl", return_value=CLASS_HASH)
 @patch("nile.core.account.Account.send", return_value=f"Transaction hash: {TX_HASH}")
 @patch("nile.deployments.update_abi")
 def test_upgrade_proxy(
@@ -43,7 +43,7 @@ def test_upgrade_proxy(
 
 
 @patch("nile_upgrades.upgrade_proxy._load_deployment", return_value=PROXY_ADDR_INT)
-@patch("nile_upgrades.common.declare_impl", return_value=CLASS_HASH)
+@patch("nile_upgrades.upgrade_proxy.declare_impl", return_value=CLASS_HASH)
 @patch("nile.core.account.Account.send", return_value=f"Transaction hash: {TX_HASH}")
 @patch("nile.deployments.update_abi")
 def test_upgrade_proxy_all_opts(
