@@ -36,7 +36,7 @@ async def test_deploy_proxy(
     logging.getLogger().setLevel(logging.DEBUG)
 
     with patch("nile.nre.NileRuntimeEnvironment.deploy", new=AsyncMock(return_value=(PROXY_ADDR_INT, IMPL_ABI))) as mock_deploy:
-        result = await deploy_proxy(NileRuntimeEnvironment(), SIGNER, CONTRACT, ARGS);
+        result = await deploy_proxy(NileRuntimeEnvironment(), SIGNER, CONTRACT, ARGS)
         assert result == PROXY_ADDR_INT
 
         _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_impl, caplog, "initializer", None, None)
