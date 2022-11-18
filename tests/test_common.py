@@ -52,7 +52,7 @@ async def test_declare_impl(
 ):
     logging.getLogger().setLevel(logging.DEBUG)
 
-    result = await declare_impl(NETWORK, CONTRACT, SIGNER, None);
+    result = await declare_impl(NETWORK, CONTRACT, SIGNER, None)
     assert result == CLASS_HASH
 
     # check logs
