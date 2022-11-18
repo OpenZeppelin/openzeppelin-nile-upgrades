@@ -39,7 +39,7 @@ async def test_declare_impl_not_match(
     mock_declare, mock_class_hash_exists, mock_get_hash, caplog
 ):
     with pytest.raises(Exception) as e:
-        await declare_impl(NETWORK, CONTRACT, SIGNER, None);
+        await declare_impl(NETWORK, CONTRACT, SIGNER, None)
     assert f"Declared hash {WRONG_HASH} does not match expected hash {PADDED_HASH}" in str(e.value)
 
 
