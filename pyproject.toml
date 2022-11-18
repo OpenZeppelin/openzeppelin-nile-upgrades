@@ -24,6 +24,9 @@ packages = [
   { include = "nile_upgrades", from = "src" },
 ]
 
+[tool.poetry.scripts]
+compile = "compile_proxy:main"
+
 [tool.poetry.dependencies]
 python = ">=3.8,<3.10"
 click = "^8.0.4"

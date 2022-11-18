@@ -82,6 +82,7 @@ source env/bin/activate
 poetry install
 pip3 install -e <your_path_to_nile_repo_from_step_2>
 pip3 install -e .
+poetry run compile
 ```
 
 ### Testing
