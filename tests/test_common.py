@@ -17,7 +17,7 @@ WRONG_HASH = "0x000000000000000000000000000000000000000000000000000000000000011"
 
 
 @pytest.mark.asyncio
-@patch("nile_upgrades.common.get_hash", return_value=PADDED_HASH)
+@patch("nile_upgrades.common.get_class_hash", return_value=CLASS_HASH)
 @patch("nile_upgrades.common.class_hash_exists", return_value=True)
 async def test_declare_impl_already_exists(
     mock_class_hash_exists, mock_get_hash, caplog
@@ -32,7 +32,7 @@ async def test_declare_impl_already_exists(
 
 
 @pytest.mark.asyncio
-@patch("nile_upgrades.common.get_hash", return_value=PADDED_HASH)
+@patch("nile_upgrades.common.get_class_hash", return_value=CLASS_HASH)
 @patch("nile_upgrades.common.class_hash_exists", return_value=False)
 @patch("nile.core.account.Account.declare", return_value=WRONG_HASH)
 async def test_declare_impl_not_match(
@@ -44,7 +44,7 @@ async def test_declare_impl_not_match(
 
 
 @pytest.mark.asyncio
-@patch("nile_upgrades.common.get_hash", return_value=PADDED_HASH)
+@patch("nile_upgrades.common.get_class_hash", return_value=CLASS_HASH)
 @patch("nile_upgrades.common.class_hash_exists", return_value=False)
 @patch("nile.core.account.Account.declare", return_value=PADDED_HASH)
 async def test_declare_impl(

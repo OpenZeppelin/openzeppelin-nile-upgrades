@@ -1,8 +1,9 @@
 import logging
 
-from nile.common import get_hash, ABIS_DIRECTORY
+from nile.common import get_class_hash, ABIS_DIRECTORY
 from nile.core.account import Account
-from nile.deployments import class_hash_exists, normalize_number
+from nile.deployments import class_hash_exists
+from nile.utils import hex_class_hash
 
 
 async def declare_impl(network, contract_name, signer, max_fee):
@@ -10,8 +11,8 @@ async def declare_impl(network, contract_name, signer, max_fee):
     Declare an implementation contract.
     """
     logging.debug(f"Declaring implementation {contract_name}...")
-    padded_hash = get_hash(contract_name=contract_name)
-    class_hash = normalize_number(padded_hash)
+    class_hash = get_class_hash(contract_name=contract_name)
+    padded_hash = hex_class_hash(class_hash)
     if class_hash_exists(class_hash, network):
         logging.debug(f"Implementation with hash {padded_hash} already exists")
     else:
