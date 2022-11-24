@@ -1,28 +1,30 @@
 import logging
 
-from nile.common import get_hash, ABIS_DIRECTORY
+from nile.common import get_class_hash, ABIS_DIRECTORY
 from nile.core.account import Account
 from nile.deployments import class_hash_exists
+from nile.utils import hex_class_hash
 
 
-def declare_impl(nre, contract_name, signer, max_fee):
+async def declare_impl(network, contract_name, signer, max_fee):
     """
     Declare an implementation contract.
     """
     logging.debug(f"Declaring implementation {contract_name}...")
-    impl_class_hash = get_hash(contract_name=contract_name)
-    if class_hash_exists(impl_class_hash, nre.network):
-        logging.debug(f"Implementation with hash {impl_class_hash} already exists")
+    class_hash = get_class_hash(contract_name=contract_name)
+    padded_hash = hex_class_hash(class_hash)
+    if class_hash_exists(class_hash, network):
+        logging.debug(f"Implementation with hash {padded_hash} already exists")
     else:
-        account = Account(signer, nre.network)
-        declared_hash = account.declare(contract_name, max_fee=max_fee)
-        if impl_class_hash != declared_hash:
+        account = await Account(signer, network)
+        declared_hash = await account.declare(contract_name, max_fee=max_fee)
+        if padded_hash != declared_hash:
             raise Exception(
-                f"Declared hash {declared_hash} does not match expected hash {impl_class_hash}"
+                f"Declared hash {declared_hash} does not match expected hash {padded_hash}"
             )
-        logging.debug(f"Implementation declared with hash {declared_hash}")
+        logging.debug(f"Implementation declared with hash {padded_hash}")
 
-    return impl_class_hash
+    return class_hash
 
 
 def get_contract_abi(contract_name):

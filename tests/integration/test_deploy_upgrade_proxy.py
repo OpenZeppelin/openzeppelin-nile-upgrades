@@ -1,4 +1,5 @@
 """Tests for deploying and upgrading a proxy."""
+import asyncio
 import os
 import shutil
 import sys
@@ -13,18 +14,12 @@ from urllib.error import URLError
 from urllib.request import urlopen
 
 import pytest
-from click.testing import CliRunner
+from asyncclick.testing import CliRunner
 
 from nile.cli import cli
 from nile.common import ABIS_DIRECTORY, BUILD_DIRECTORY, CONTRACTS_DIRECTORY
 
 RESOURCES_DIR = Path(__file__).parent / "resources"
-
-
-@pytest.fixture(autouse=True)
-def tmp_working_dir(monkeypatch, tmp_path):
-    monkeypatch.chdir(tmp_path)
-    return tmp_path
 
 
 def create_process(target, args):
@@ -34,10 +29,14 @@ def create_process(target, args):
 
 
 def start_node(seconds, node_args):
+    asyncio.run(start_node_with_timer(seconds, node_args))
+
+
+async def start_node_with_timer(seconds, node_args):
     """Start node with host and port specified in node_args and life in seconds."""
     # Timed kill command with SIGINT to close Node process
     Timer(seconds, lambda: kill(getpid(), SIGINT)).start()
-    CliRunner().invoke(cli, ["node", *node_args])
+    await CliRunner().invoke(cli, ["node", *node_args])
 
 
 def check_node(p, seconds, gateway_url):
@@ -60,8 +59,9 @@ def spawn_gateway():
 
     # Spawn process to start StarkNet local network with specified port
     # i.e. $ nile node --host localhost --port 5000
+    args = ["--host", "localhost", "--port", "5000"]
     p = create_process(
-        target=start_node, args=(seconds, ["--host", "localhost", "--port", "5000"])
+        target=start_node, args=(seconds, args)
     )
     p.start()
 
@@ -72,13 +72,13 @@ def spawn_gateway():
     return p
 
 
-@patch.dict(os.environ, {"PKEY1": "1234"})
+@pytest.mark.asyncio
 @pytest.mark.xfail(
     sys.version_info >= (3, 10),
     reason="Issue in cairo-lang. "
     "See https://github.com/starkware-libs/cairo-lang/issues/27",
 )
-def test_deploy_upgrade_proxy():
+async def test_deploy_upgrade_proxy():
     contract_v1 = RESOURCES_DIR / "contracts" / "contract.cairo"
     contract_v2 = RESOURCES_DIR / "contracts" / "contract_v2.cairo"
     script = RESOURCES_DIR / "scripts" / "deploy_upgrade_proxy.py"
@@ -93,7 +93,7 @@ def test_deploy_upgrade_proxy():
     build_dir = Path(BUILD_DIRECTORY)
 
     # Compile contracts
-    result = CliRunner().invoke(cli, ["compile"])
+    result = await CliRunner().invoke(cli, ["compile"])
     assert result.exit_code == 0
 
     assert {f.name for f in abi_dir.glob("*.json")} == {
@@ -109,13 +109,14 @@ def test_deploy_upgrade_proxy():
     p = spawn_gateway()
 
     # Run test script
-    result = CliRunner().invoke(cli, ["run", str(script)])
-    assert result.exit_code == 0
+    with patch.dict(os.environ, {"PKEY1": "1234"}, clear=False):
+        result = await CliRunner().invoke(cli, ["run", str(script)])
+        assert result.exit_code == 0
 
-    # Check script output
-    assert "balance from v1: ['1']" in result.output
-    assert "upgrade tx: 0x" in result.output
-    assert "balance from v2: ['1']" in result.output
-    assert "balance after reset from v2: ['0']" in result.output
+        # Check script output
+        assert "balance from v1: 1" in result.output
+        assert "upgrade tx: 0x" in result.output
+        assert "balance from v2: 1" in result.output
+        assert "balance after reset from v2: 0" in result.output
 
     p.terminate()
