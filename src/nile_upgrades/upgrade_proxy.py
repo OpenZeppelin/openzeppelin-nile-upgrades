@@ -2,21 +2,23 @@ import logging
 
 from nile import deployments
 from nile.common import is_alias
-from nile.core.account import Account
+# from nile.core.account import Account
 from nile.utils import normalize_number, hex_class_hash, hex_address
 
-from nile_upgrades.common import declare_impl, get_contract_abi
+from nile_upgrades.common import declare_class, get_contract_abi
 
 
 async def upgrade_proxy(
-    nre, signer, proxy_address_or_alias, contract_name, max_fee=None, standalone_mode=None
+    nre, account, proxy_address_or_alias, contract_name, max_fee=None, standalone_mode=None
 ):
     """
     Upgrade a proxy to a different implementation contract.
 
+    Returns a Nile Transaction instance representing the upgrade operation.
+
     `nre` - the `NileRuntimeEnvironment` object.
 
-    `signer` - private key alias for the Account to use.
+    `account` - the Account to use.
 
     `proxy_address_or_alias` - the proxy address or alias.
 
@@ -27,22 +29,21 @@ async def upgrade_proxy(
 
     proxy_address = _load_deployment(proxy_address_or_alias, nre.network)
 
-    impl_class_hash = await declare_impl(nre.network, contract_name, signer, max_fee)
+    # Declare new implementation
+    impl_class_hash = await declare_class(nre.network, contract_name, account, max_fee)
 
+    # Perform upgrade
     logging.info(f"⏭️  Upgrading proxy {hex_address(proxy_address)} to class hash {hex_class_hash(impl_class_hash)}")
-    account = await Account(signer, nre.network)
-    upgrade_result = await account.send(
+    upgrade_tx = await account.send(
         proxy_address, "upgrade", calldata=[impl_class_hash], max_fee=max_fee
     )
 
-    tx_hash = _get_tx_hash(upgrade_result)
-    logging.info(f"🧾 Upgrade transaction hash: {tx_hash}")
-
+    # Update ABI in deployments file
     deployments.update_abi(
         proxy_address, get_contract_abi(contract_name), nre.network
     )
 
-    return tx_hash
+    return upgrade_tx
 
 
 def _load_deployment(proxy_address_or_alias, network):
@@ -70,10 +71,3 @@ def _normalize_string(proxy_address_or_alias):
     if type(identifier) is int:
         identifier = hex_address(identifier)
     return identifier
-
-
-def _get_tx_hash(output):
-    lines = output.splitlines()
-    for line in lines:
-        if "Transaction hash" in line:
-            return line.split(":")[1].strip()

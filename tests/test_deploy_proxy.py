@@ -1,12 +1,15 @@
 """Tests for deploy proxy."""
-import logging
-from unittest.mock import AsyncMock, patch
+import os
+import pytest
+from unittest.mock import patch
 
 from nile.nre import NileRuntimeEnvironment
-import pytest
-from nile_upgrades.common import get_contract_abi
+from nile.utils.status import TransactionStatus, TxStatus
 
+from nile_upgrades.common import get_contract_abi
 from nile_upgrades.deploy_proxy import deploy_proxy
+
+from mocks.mock_account import MockAccount
 
 
 NETWORK = "localhost"
@@ -15,6 +18,7 @@ SIGNER = "PKEY1"
 
 SELECTOR = 1
 CLASS_HASH = 16
+PROXY_CLASS_HASH = 17
 ARGS = ["abc", 123]
 PROXY_ADDR = "0x000000000000000000000000000000000000000000000000000000000000000f"
 PROXY_ADDR_INT = 15
@@ -25,51 +29,61 @@ CUSTOM_INIT = "my_init_func"
 ALIAS = "my_alias"
 MAX_FEE = 100
 
+KEY = "TEST_KEY"
+PRIVATE_KEY = "1234"
+MOCK_TX_HASH = 1
+TX_STATUS = TransactionStatus(MOCK_TX_HASH, TxStatus.ACCEPTED_ON_L2, None)
+
 
 @pytest.mark.asyncio
-@patch("nile_upgrades.deploy_proxy.declare_impl", return_value=CLASS_HASH)
+@patch("nile_upgrades.deploy_proxy.declare_class")
 @patch("nile_upgrades.deploy_proxy.get_selector_from_name", return_value=SELECTOR)
 @patch("nile_upgrades.deploy_proxy._get_proxy_artifact_path", return_value=PROXY_ARTIFACT_PATH)
+@patch("nile.core.types.account.Account.deploy_contract")
 async def test_deploy_proxy(
-    mock_get_proxy_artifact_path, mock_get_selector, mock_declare_impl, caplog
+    mock_deploy, mock_get_proxy_artifact_path, mock_get_selector, mock_declare_class
 ):
-    logging.getLogger().setLevel(logging.DEBUG)
+    mock_declare_class.side_effect = [CLASS_HASH, PROXY_CLASS_HASH]
 
-    with patch("nile.nre.NileRuntimeEnvironment.deploy", new=AsyncMock(return_value=(PROXY_ADDR_INT, IMPL_ABI))) as mock_deploy:
-        result = await deploy_proxy(NileRuntimeEnvironment(), SIGNER, CONTRACT, ARGS)
-        assert result == PROXY_ADDR_INT
+    with patch.dict(os.environ, {KEY: PRIVATE_KEY}, clear=False):
+        account = await MockAccount(KEY, NETWORK)
 
-        _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_impl, caplog, "initializer", None, None)
+    await deploy_proxy(NileRuntimeEnvironment(), account, CONTRACT, ARGS)
+
+    _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_class, account, "initializer", PROXY_ARTIFACT_PATH, None, None)
 
 
 @pytest.mark.asyncio
-@patch("nile_upgrades.deploy_proxy.declare_impl", return_value=CLASS_HASH)
+@patch("nile_upgrades.deploy_proxy.declare_class")
 @patch("nile_upgrades.deploy_proxy.get_selector_from_name", return_value=SELECTOR)
 @patch("nile_upgrades.deploy_proxy._get_proxy_artifact_path", return_value=PROXY_ARTIFACT_PATH)
+@patch("nile.core.types.account.Account.deploy_contract")
 async def test_deploy_proxy_all_opts(
-    mock_get_proxy_artifact_path, mock_get_selector, mock_declare_impl, caplog
+    mock_deploy, mock_get_proxy_artifact_path, mock_get_selector, mock_declare_class
 ):
-    logging.getLogger().setLevel(logging.DEBUG)
+    mock_declare_class.side_effect = [CLASS_HASH, PROXY_CLASS_HASH]
 
-    with patch("nile.nre.NileRuntimeEnvironment.deploy", new=AsyncMock(return_value=(PROXY_ADDR_INT, IMPL_ABI))) as mock_deploy:
-        result = await deploy_proxy(NileRuntimeEnvironment(), SIGNER, CONTRACT, ARGS, CUSTOM_INIT, ALIAS, MAX_FEE)
-        assert result == PROXY_ADDR_INT
+    with patch.dict(os.environ, {KEY: PRIVATE_KEY}, clear=False):
+        account = await MockAccount(KEY, NETWORK)
 
-        _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_impl, caplog, CUSTOM_INIT, ALIAS, MAX_FEE)
+    await deploy_proxy(NileRuntimeEnvironment(), account, CONTRACT, ARGS, CUSTOM_INIT, ALIAS, MAX_FEE)
+
+    _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_class, account, CUSTOM_INIT, PROXY_ARTIFACT_PATH, ALIAS, MAX_FEE)
 
 
-def _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_impl, caplog, initializer, alias, max_fee):
-    mock_declare_impl.assert_called_once_with(NETWORK, CONTRACT, SIGNER, max_fee)
+def _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_class, account, initializer, overriding_path, alias, max_fee):
+    mock_declare_class.assert_any_call(NETWORK, CONTRACT, account, max_fee)
+    mock_declare_class.assert_any_call(NETWORK, "Proxy", account, max_fee, overriding_path=overriding_path)
 
     mock_get_selector.assert_called_once_with(initializer)
 
     mock_deploy.assert_called_once_with(
         "Proxy",
-        arguments=[CLASS_HASH, SELECTOR, len(ARGS), *ARGS],
+        salt=123,
+        unique=False,
+        calldata=[CLASS_HASH, SELECTOR, len(ARGS), *ARGS],
+        max_fee=max_fee,
         alias=alias,
         overriding_path=PROXY_ARTIFACT_PATH,
         abi=IMPL_ABI,
     )
-
-    # check logs
-    assert f"Proxy deployed to address {PROXY_ADDR} using ABI {IMPL_ABI}" in caplog.text
