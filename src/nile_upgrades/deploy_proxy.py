@@ -29,12 +29,13 @@ async def deploy_proxy(
     `max_fee` - Maximum fee for the transaction. Defaults to `None`.
     """
 
+    # Declare implementation
     impl_class_hash = await declare_contract(nre.network, contract_name, account, max_fee)
-    print(f"DECLARED IMPL WITH HASH {impl_class_hash}")
 
-    proxy_class_hash = await declare_contract(nre.network, "Proxy", account, max_fee, overriding_path=_get_proxy_artifact_path())
-    print(f"DECLARED PROXY with hash {hex(proxy_class_hash)}")
+    # Declare proxy
+    await declare_contract(nre.network, "Proxy", account, max_fee, overriding_path=_get_proxy_artifact_path())
 
+    # Deploy proxy
     logging.debug(f"Deploying proxy...")
     selector = get_selector_from_name(initializer)
     deploy_tx = await account.deploy_contract(

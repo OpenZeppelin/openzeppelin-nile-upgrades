@@ -29,15 +29,16 @@ async def upgrade_proxy(
 
     proxy_address = _load_deployment(proxy_address_or_alias, nre.network)
 
+    # Declare new implementation
     impl_class_hash = await declare_contract(nre.network, contract_name, account, max_fee)
 
+    # Perform upgrade
     logging.info(f"⏭️  Upgrading proxy {hex_address(proxy_address)} to class hash {hex_class_hash(impl_class_hash)}")
     upgrade_tx = await account.send(
         proxy_address, "upgrade", calldata=[impl_class_hash], max_fee=max_fee
     )
 
-    # logging.info(f"🧾 Upgrade transaction hash: {tx_hash}")
-
+    # Update ABI in deployments file
     deployments.update_abi(
         proxy_address, get_contract_abi(contract_name), nre.network
     )
