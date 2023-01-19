@@ -18,15 +18,17 @@ Run the following functions from scripts with the `NileRuntimeEnvironment`.
 
 Deploy an upgradeable proxy for an implementation contract.
 
+Returns a Nile Transaction instance representing the proxy deployment.
+
 ```
-def deploy_proxy(
-    nre, signer, contract_name, initializer_args, initializer='initializer', alias=None, max_fee=None
-)
+async def deploy_proxy(
+    nre, account, contract_name, initializer_args, initializer='initializer', alias=None, max_fee=None
+):
 ```
 
 - `nre` - the `NileRuntimeEnvironment` object.
 
-- `signer` - private key alias for the Account to use.
+- `account` - the Account to use.
 
 - `contract_name` - the name of the implementation contract.
 
@@ -40,17 +42,20 @@ def deploy_proxy(
 
 Example usage:
 ```
-proxy_address = nre.deploy_proxy(nre, "PKEY1", "my_contract_v1", ["arg for initializer"])
+tx = await nre.deploy_proxy(nre, account, "my_contract_v1", ["arg for initializer"])
+tx_status, proxy_address, abi = await tx.execute(watch_mode="track")
 ```
 
 ### `upgrade_proxy`  
 
 Upgrade a proxy to a different implementation contract.
 
+Returns a Nile Transaction instance representing the upgrade operation.
+
 ```
-def upgrade_proxy(
-    nre, signer, proxy_address_or_alias, contract_name, max_fee=None
-)
+async def upgrade_proxy(
+    nre, account, proxy_address_or_alias, contract_name, max_fee=None
+):
 ```
 
 - `nre` - the `NileRuntimeEnvironment` object.
@@ -65,7 +70,8 @@ def upgrade_proxy(
 
 Example usage:
 ```
-tx_hash = nre.upgrade_proxy(nre, "PKEY1", proxy_address, "my_contract_v2")
+tx = await nre.upgrade_proxy(nre, account, proxy_address, "my_contract_v2")
+tx_status = await tx.execute(watch_mode="track")
 ```
 
 ## Contribute
