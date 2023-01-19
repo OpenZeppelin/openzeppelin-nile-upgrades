@@ -24,6 +24,7 @@ PROXY_ADDR = "0x000000000000000000000000000000000000000000000000000000000000000f
 PROXY_ADDR_INT = 15
 PROXY_ARTIFACT_PATH = ("upgrades/artifacts", "upgrades/artifacts/abis")
 IMPL_ABI = get_contract_abi(CONTRACT)
+SALT = 20
 
 CUSTOM_INIT = "my_init_func"
 ALIAS = "my_alias"
@@ -50,7 +51,7 @@ async def test_deploy_proxy(
 
     await deploy_proxy(NileRuntimeEnvironment(), account, CONTRACT, ARGS)
 
-    _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_class, account, "initializer", PROXY_ARTIFACT_PATH, None, None)
+    _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_class, account, "initializer", PROXY_ARTIFACT_PATH, 0, None, None)
 
 
 @pytest.mark.asyncio
@@ -66,12 +67,12 @@ async def test_deploy_proxy_all_opts(
     with patch.dict(os.environ, {KEY: PRIVATE_KEY}, clear=False):
         account = await MockAccount(KEY, NETWORK)
 
-    await deploy_proxy(NileRuntimeEnvironment(), account, CONTRACT, ARGS, CUSTOM_INIT, ALIAS, MAX_FEE)
+    await deploy_proxy(NileRuntimeEnvironment(), account, CONTRACT, ARGS, CUSTOM_INIT, SALT, ALIAS, MAX_FEE)
 
-    _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_class, account, CUSTOM_INIT, PROXY_ARTIFACT_PATH, ALIAS, MAX_FEE)
+    _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_class, account, CUSTOM_INIT, PROXY_ARTIFACT_PATH, SALT, ALIAS, MAX_FEE)
 
 
-def _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_class, account, initializer, overriding_path, alias, max_fee):
+def _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_class, account, initializer, overriding_path, salt, alias, max_fee):
     mock_declare_class.assert_any_call(NETWORK, CONTRACT, account, max_fee)
     mock_declare_class.assert_any_call(NETWORK, "Proxy", account, max_fee, overriding_path=overriding_path)
 
@@ -79,7 +80,7 @@ def _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_class, a
 
     mock_deploy.assert_called_once_with(
         "Proxy",
-        salt=123,
+        salt=salt,
         unique=False,
         calldata=[CLASS_HASH, SELECTOR, len(ARGS), *ARGS],
         max_fee=max_fee,
