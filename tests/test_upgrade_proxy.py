@@ -42,7 +42,7 @@ TX_STATUS = TransactionStatus(MOCK_TX_HASH, TxStatus.ACCEPTED_ON_L2, None)
 @patch("nile.core.types.account.Account.send")
 @patch("nile.deployments.update_abi")
 async def test_upgrade_proxy(
-    mock_update_abi, mock_send, mock_declare_impl, mock_load_deployment, caplog
+    mock_update_abi, mock_send, mock_declare_class, mock_load_deployment, caplog
 ):
     logging.getLogger().setLevel(logging.INFO)
 
@@ -60,7 +60,7 @@ async def test_upgrade_proxy(
 @patch("nile.core.types.account.Account.send")
 @patch("nile.deployments.update_abi")
 async def test_upgrade_proxy_all_opts(
-    mock_update_abi, mock_send, mock_declare_impl, mock_load_deployment, caplog
+    mock_update_abi, mock_send, mock_declare_class, mock_load_deployment, caplog
 ):
     logging.getLogger().setLevel(logging.INFO)
 
