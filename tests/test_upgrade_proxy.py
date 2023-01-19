@@ -7,7 +7,7 @@ import pytest
 from nile.nre import NileRuntimeEnvironment
 from nile_upgrades.common import get_contract_abi
 
-from nile_upgrades.upgrade_proxy import _get_tx_hash, _load_deployment, upgrade_proxy
+from nile_upgrades.upgrade_proxy import _load_deployment, upgrade_proxy
 
 
 NETWORK = "localhost"
@@ -112,12 +112,3 @@ def test_load_deployment_multiple_alias(
     with pytest.raises(Exception) as e:
         _load_deployment(ALIAS, NETWORK)
     assert f"Multiple deployments found with address or alias {ALIAS}" in str(e.value)
-
-
-def test_get_tx_hash():
-    result = _get_tx_hash(
-        """Something: 0x001
-        Transaction hash: 0x002
-        Something else: 123
-        """)
-    assert result == "0x002"

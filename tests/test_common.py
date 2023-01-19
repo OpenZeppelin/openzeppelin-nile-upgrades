@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import pytest
 
-from nile_upgrades.common import declare_impl, get_contract_abi
+from nile_upgrades.common import declare_contract, get_contract_abi
 
 
 NETWORK = "localhost"
@@ -24,7 +24,7 @@ async def test_declare_impl_already_exists(
 ):
     logging.getLogger().setLevel(logging.DEBUG)
 
-    result = await declare_impl(NETWORK, CONTRACT, SIGNER, None)
+    result = await declare_contract(NETWORK, CONTRACT, SIGNER, None)
     assert result == CLASS_HASH
 
     # check logs
@@ -39,7 +39,7 @@ async def test_declare_impl_not_match(
     mock_declare, mock_class_hash_exists, mock_get_hash, caplog
 ):
     with pytest.raises(Exception) as e:
-        await declare_impl(NETWORK, CONTRACT, SIGNER, None)
+        await declare_contract(NETWORK, CONTRACT, SIGNER, None)
     assert f"Declared hash {WRONG_HASH} does not match expected hash {PADDED_HASH}" in str(e.value)
 
 
@@ -52,7 +52,7 @@ async def test_declare_impl(
 ):
     logging.getLogger().setLevel(logging.DEBUG)
 
-    result = await declare_impl(NETWORK, CONTRACT, SIGNER, None)
+    result = await declare_contract(NETWORK, CONTRACT, SIGNER, None)
     assert result == CLASS_HASH
 
     # check logs
