@@ -78,7 +78,24 @@ tx_status = await tx.execute(watch_mode="track")
 
 ## Contribute
 
-### Installation
+### Setup
+
+#### Using a released version of Nile
+
+1. Install [Poetry](https://python-poetry.org/docs/#installation)
+3. Clone this project.
+4. From this project's root, setup venv and install dependencies:
+```
+python3 -m venv env
+source env/bin/activate
+poetry install
+pip3 install -e .
+poetry run compile
+```
+
+**or**
+
+#### Using current Nile source code
 
 1. Install [Poetry](https://python-poetry.org/docs/#installation)
 2. Clone https://github.com/OpenZeppelin/nile
