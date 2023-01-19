@@ -1,15 +1,15 @@
 """Tests for common."""
 import logging
 import os
+import pytest
 from unittest.mock import patch
 
-import pytest
-
+from nile.core.types.tx_wrappers import DeclareTxWrapper
 from nile.utils.status import TransactionStatus, TxStatus
 
 from nile_upgrades.common import declare_contract, get_contract_abi
+
 from mocks.mock_account import MockAccount
-from nile.core.types.tx_wrappers import DeclareTxWrapper
 
 
 NETWORK = "localhost"

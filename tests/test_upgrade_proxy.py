@@ -1,13 +1,16 @@
 """Tests for deploy proxy."""
 import logging
+import os
+import pytest
 from unittest.mock import patch
 
-import pytest
-
 from nile.nre import NileRuntimeEnvironment
-from nile_upgrades.common import get_contract_abi
+from nile.utils.status import TransactionStatus, TxStatus
 
+from nile_upgrades.common import get_contract_abi
 from nile_upgrades.upgrade_proxy import _load_deployment, upgrade_proxy
+
+from mocks.mock_account import MockAccount
 
 
 NETWORK = "localhost"
@@ -27,33 +30,44 @@ MAX_FEE = 100
 
 TX_HASH = "0xA"
 
+KEY = "TEST_KEY"
+PRIVATE_KEY = "1234"
+MOCK_TX_HASH = 1
+TX_STATUS = TransactionStatus(MOCK_TX_HASH, TxStatus.ACCEPTED_ON_L2, None)
+
 
 @pytest.mark.asyncio
 @patch("nile_upgrades.upgrade_proxy._load_deployment", return_value=PROXY_ADDR_INT)
-@patch("nile_upgrades.upgrade_proxy.declare_impl", return_value=CLASS_HASH)
-@patch("nile.core.account.Account.send", return_value=f"Transaction hash: {TX_HASH}")
+@patch("nile_upgrades.upgrade_proxy.declare_contract", return_value=CLASS_HASH)
+@patch("nile.core.types.account.Account.send")
 @patch("nile.deployments.update_abi")
 async def test_upgrade_proxy(
     mock_update_abi, mock_send, mock_declare_impl, mock_load_deployment, caplog
 ):
     logging.getLogger().setLevel(logging.INFO)
 
-    await upgrade_proxy(NileRuntimeEnvironment(), SIGNER, PROXY_ADDR, CONTRACT)
+    with patch.dict(os.environ, {KEY: PRIVATE_KEY}, clear=False):
+        account = await MockAccount(KEY, NETWORK)
+
+    await upgrade_proxy(NileRuntimeEnvironment(), account, PROXY_ADDR, CONTRACT)
 
     _assert_calls_and_logs(mock_update_abi, mock_send, caplog, None)
 
 
 @pytest.mark.asyncio
 @patch("nile_upgrades.upgrade_proxy._load_deployment", return_value=PROXY_ADDR_INT)
-@patch("nile_upgrades.upgrade_proxy.declare_impl", return_value=CLASS_HASH)
-@patch("nile.core.account.Account.send", return_value=f"Transaction hash: {TX_HASH}")
+@patch("nile_upgrades.upgrade_proxy.declare_contract", return_value=CLASS_HASH)
+@patch("nile.core.types.account.Account.send")
 @patch("nile.deployments.update_abi")
 async def test_upgrade_proxy_all_opts(
     mock_update_abi, mock_send, mock_declare_impl, mock_load_deployment, caplog
 ):
     logging.getLogger().setLevel(logging.INFO)
 
-    await upgrade_proxy(NileRuntimeEnvironment(), SIGNER, PROXY_ADDR, CONTRACT, MAX_FEE)
+    with patch.dict(os.environ, {KEY: PRIVATE_KEY}, clear=False):
+        account = await MockAccount(KEY, NETWORK)
+
+    await upgrade_proxy(NileRuntimeEnvironment(), account, PROXY_ADDR, CONTRACT, MAX_FEE)
 
     _assert_calls_and_logs(mock_update_abi, mock_send, caplog, MAX_FEE)
 
@@ -69,7 +83,6 @@ def _assert_calls_and_logs(mock_update_abi, mock_send, caplog, max_fee):
 
     # check logs
     assert f"Upgrading proxy {PROXY_ADDR} to class hash {HEX_CLASS_HASH}" in caplog.text
-    assert f"Upgrade transaction hash: {TX_HASH}" in caplog.text
 
 
 @patch("nile.deployments.load", return_value=iter([(PROXY_ADDR_INT, IMPL_ABI)]))

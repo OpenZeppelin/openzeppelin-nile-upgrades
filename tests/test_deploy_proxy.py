@@ -1,13 +1,14 @@
 """Tests for deploy proxy."""
 import os
-from unittest.mock import AsyncMock, call, patch
+import pytest
+from unittest.mock import patch
 
 from nile.nre import NileRuntimeEnvironment
-import pytest
 from nile.utils.status import TransactionStatus, TxStatus
 
 from nile_upgrades.common import get_contract_abi
 from nile_upgrades.deploy_proxy import deploy_proxy
+
 from mocks.mock_account import MockAccount
 
 
