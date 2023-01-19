@@ -7,7 +7,7 @@ from nile_upgrades.common import declare_class, get_contract_abi
 
 
 async def deploy_proxy(
-    nre, account, contract_name, initializer_args, initializer='initializer', salt=0, alias=None, max_fee=None, standalone_mode=None
+    nre, account, contract_name, salt, unique, initializer_args, initializer='initializer', alias=None, max_fee=None, standalone_mode=None
 ):
     """
     Deploy an upgradeable proxy for an implementation contract.
@@ -20,11 +20,11 @@ async def deploy_proxy(
 
     `contract_name` - the name of the implementation contract.
 
+    `salt` and `unique` - UDC specific arguments for proxy address generation.
+
     `initializer_args` - array of arguments for the initializer function.
 
     `initializer` - initializer function name. Defaults to `'initializer'`.
-
-    `salt` - Specify the salt for the proxy address generation. Defaults to `0`.
 
     `alias` - Unique identifier for your proxy. Defaults to `None`.
 
@@ -43,7 +43,7 @@ async def deploy_proxy(
     deploy_tx = await account.deploy_contract(
         "Proxy",
         salt=salt,
-        unique=False,
+        unique=unique,
         calldata=[impl_class_hash, selector, len(initializer_args), *initializer_args],
         max_fee=max_fee,
         alias=alias,
