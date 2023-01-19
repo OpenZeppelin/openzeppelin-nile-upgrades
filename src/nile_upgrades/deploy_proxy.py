@@ -3,7 +3,7 @@ import os
 
 from starkware.starknet.compiler.compile import get_selector_from_name
 
-from nile_upgrades.common import declare_contract, get_contract_abi
+from nile_upgrades.common import declare_class, get_contract_abi
 
 
 async def deploy_proxy(
@@ -30,10 +30,10 @@ async def deploy_proxy(
     """
 
     # Declare implementation
-    impl_class_hash = await declare_contract(nre.network, contract_name, account, max_fee)
+    impl_class_hash = await declare_class(nre.network, contract_name, account, max_fee)
 
     # Declare proxy
-    await declare_contract(nre.network, "Proxy", account, max_fee, overriding_path=_get_proxy_artifact_path())
+    await declare_class(nre.network, "Proxy", account, max_fee, overriding_path=_get_proxy_artifact_path())
 
     # Deploy proxy
     logging.debug(f"Deploying proxy...")

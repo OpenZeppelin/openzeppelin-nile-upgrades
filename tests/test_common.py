@@ -7,7 +7,7 @@ from unittest.mock import patch
 from nile.core.types.tx_wrappers import DeclareTxWrapper
 from nile.utils.status import TransactionStatus, TxStatus
 
-from nile_upgrades.common import declare_contract, get_contract_abi
+from nile_upgrades.common import declare_class, get_contract_abi
 
 from mocks.mock_account import MockAccount
 
@@ -36,11 +36,11 @@ async def test_declare_class_already_exists(
     with patch.dict(os.environ, {KEY: PRIVATE_KEY}, clear=False):
         account = await MockAccount(KEY, NETWORK)
 
-    result = await declare_contract(NETWORK, CONTRACT, account, None)
+    result = await declare_class(NETWORK, CONTRACT, account, None)
     assert result == CLASS_HASH
 
     # check logs
-    assert f"Contract with hash {PADDED_HASH} already exists" in caplog.text
+    assert f"Contract class with hash {PADDED_HASH} already exists" in caplog.text
 
 
 @pytest.mark.asyncio
@@ -58,7 +58,7 @@ async def test_declare_class_hash_not_match(
         account = await MockAccount(KEY, NETWORK)
 
     with pytest.raises(Exception) as e:
-        await declare_contract(NETWORK, CONTRACT, account, None)
+        await declare_class(NETWORK, CONTRACT, account, None)
     assert f"Declared hash {WRONG_HASH} does not match expected hash {PADDED_HASH}" in str(e.value)
 
 
@@ -78,11 +78,11 @@ async def test_declare_class(
     with patch.dict(os.environ, {KEY: PRIVATE_KEY}, clear=False):
         account = await MockAccount(KEY, NETWORK)
 
-    result = await declare_contract(NETWORK, CONTRACT, account, None)
+    result = await declare_class(NETWORK, CONTRACT, account, None)
     assert result == CLASS_HASH
 
     # check logs
-    assert f"Contract declared with hash {PADDED_HASH}" in caplog.text
+    assert f"Contract class declared with hash {PADDED_HASH}" in caplog.text
 
 
 def test_get_contract_abi():

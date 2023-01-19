@@ -36,7 +36,7 @@ TX_STATUS = TransactionStatus(MOCK_TX_HASH, TxStatus.ACCEPTED_ON_L2, None)
 
 
 @pytest.mark.asyncio
-@patch("nile_upgrades.deploy_proxy.declare_contract")
+@patch("nile_upgrades.deploy_proxy.declare_class")
 @patch("nile_upgrades.deploy_proxy.get_selector_from_name", return_value=SELECTOR)
 @patch("nile_upgrades.deploy_proxy._get_proxy_artifact_path", return_value=PROXY_ARTIFACT_PATH)
 @patch("nile.core.types.account.Account.deploy_contract")
@@ -54,7 +54,7 @@ async def test_deploy_proxy(
 
 
 @pytest.mark.asyncio
-@patch("nile_upgrades.deploy_proxy.declare_contract")
+@patch("nile_upgrades.deploy_proxy.declare_class")
 @patch("nile_upgrades.deploy_proxy.get_selector_from_name", return_value=SELECTOR)
 @patch("nile_upgrades.deploy_proxy._get_proxy_artifact_path", return_value=PROXY_ARTIFACT_PATH)
 @patch("nile.core.types.account.Account.deploy_contract")
