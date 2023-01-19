@@ -22,7 +22,7 @@ Returns a Nile Transaction instance representing the proxy deployment.
 
 ```
 async def deploy_proxy(
-    nre, account, contract_name, initializer_args, initializer='initializer', salt=0, alias=None, max_fee=None
+    nre, account, contract_name, salt, unique, initializer_args, initializer='initializer', alias=None, max_fee=None
 ):
 ```
 
@@ -32,11 +32,11 @@ async def deploy_proxy(
 
 - `contract_name` - the name of the implementation contract.
 
+- `salt` and `unique` - UDC specific arguments for proxy address generation.
+
 - `initializer_args` - array of arguments for the initializer function.
 
 - `initializer` - initializer function name. Defaults to `'initializer'`.
-
-- `salt` - Specify the salt for the proxy address generation. Defaults to `0`.
 
 - `alias` - Unique identifier for your proxy. Defaults to `None`.
 
@@ -44,7 +44,7 @@ async def deploy_proxy(
 
 Example usage:
 ```
-tx = await nre.deploy_proxy(nre, account, "my_contract_v1", ["arg for initializer"])
+tx = await nre.deploy_proxy(nre, account, "my_contract_v1", 123, True, ["arg for initializer"])
 tx_status, proxy_address, abi = await tx.execute(watch_mode="track")
 ```
 
