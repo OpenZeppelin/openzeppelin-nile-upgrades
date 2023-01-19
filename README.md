@@ -1,6 +1,6 @@
 # OpenZeppelin Nile Upgrades
 
-Plugin for [Nile](https://github.com/OpenZeppelin/nile) to deploy and manage [upgradeable contracts](https://docs.openzeppelin.com/contracts-cairo/proxies) on StarkNet.
+Plugin for [Nile](https://github.com/OpenZeppelin/nile) to deploy and manage [upgradeable smart contracts](https://docs.openzeppelin.com/contracts-cairo/proxies) on StarkNet.
 
 > ## ⚠️ WARNING! ⚠️
 >
@@ -9,6 +9,12 @@ Plugin for [Nile](https://github.com/OpenZeppelin/nile) to deploy and manage [up
 > This repo contains highly experimental code.
 > Expect rapid iteration.
 > **Use at your own risk.**
+
+## Installation
+
+```
+pip install nile-upgrades
+```
 
 ## Usage
 
