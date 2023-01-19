@@ -22,7 +22,7 @@ Returns a Nile Transaction instance representing the proxy deployment.
 
 ```
 async def deploy_proxy(
-    nre, account, contract_name, initializer_args, initializer='initializer', alias=None, max_fee=None
+    nre, account, contract_name, initializer_args, initializer='initializer', salt=0, alias=None, max_fee=None
 ):
 ```
 
@@ -35,6 +35,8 @@ async def deploy_proxy(
 - `initializer_args` - array of arguments for the initializer function.
 
 - `initializer` - initializer function name. Defaults to `'initializer'`.
+
+- `salt` - Specify the salt for the proxy address generation. Defaults to `0`.
 
 - `alias` - Unique identifier for your proxy. Defaults to `None`.
 
