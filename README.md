@@ -68,7 +68,7 @@ async def upgrade_proxy(
 
 - `nre` - the `NileRuntimeEnvironment` object.
 
-- `signer` - private key alias for the Account to use.
+- `account` - the Account to use.
 
 - `proxy_address_or_alias` - the proxy address or alias.
 
