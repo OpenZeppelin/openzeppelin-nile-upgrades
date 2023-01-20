@@ -26,7 +26,8 @@ PROXY_ADDR_INT = 15
 IMPL_ABI = get_contract_abi(CONTRACT)
 
 ALIAS = "my_proxy"
-MAX_FEE = 100
+MAX_FEE_DECLARE_IMPL = 100
+MAX_FEE_UPGRADE_PROXY = 200
 
 TX_HASH = "0xA"
 
@@ -51,7 +52,7 @@ async def test_upgrade_proxy(
 
     await upgrade_proxy(NileRuntimeEnvironment(), account, PROXY_ADDR, CONTRACT)
 
-    _assert_calls_and_logs(mock_update_abi, mock_send, caplog, None)
+    _assert_calls_and_logs(mock_update_abi, mock_send, mock_declare_class, account, caplog, None, None)
 
 
 @pytest.mark.asyncio
@@ -67,14 +68,16 @@ async def test_upgrade_proxy_all_opts(
     with patch.dict(os.environ, {KEY: PRIVATE_KEY}, clear=False):
         account = await MockAccount(KEY, NETWORK)
 
-    await upgrade_proxy(NileRuntimeEnvironment(), account, PROXY_ADDR, CONTRACT, MAX_FEE)
+    await upgrade_proxy(NileRuntimeEnvironment(), account, PROXY_ADDR, CONTRACT, MAX_FEE_DECLARE_IMPL, MAX_FEE_UPGRADE_PROXY)
 
-    _assert_calls_and_logs(mock_update_abi, mock_send, caplog, MAX_FEE)
+    _assert_calls_and_logs(mock_update_abi, mock_send, mock_declare_class, account, caplog, MAX_FEE_DECLARE_IMPL, MAX_FEE_UPGRADE_PROXY)
 
 
-def _assert_calls_and_logs(mock_update_abi, mock_send, caplog, max_fee):
+def _assert_calls_and_logs(mock_update_abi, mock_send, mock_declare_class, account, caplog, max_fee_declare_impl, max_fee_upgrade_proxy):
+    mock_declare_class.assert_called_once_with(NETWORK, CONTRACT, account, max_fee_declare_impl)
+
     mock_send.assert_called_once_with(
-        PROXY_ADDR_INT, "upgrade", calldata=[CLASS_HASH], max_fee=max_fee
+        PROXY_ADDR_INT, "upgrade", calldata=[CLASS_HASH], max_fee=max_fee_upgrade_proxy
     )
 
     mock_update_abi.assert_called_once_with(
