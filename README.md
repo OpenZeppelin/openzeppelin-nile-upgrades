@@ -1,6 +1,6 @@
 # OpenZeppelin Nile Upgrades
 
-Plugin for [Nile](https://github.com/OpenZeppelin/nile) to deploy and manage [upgradeable contracts](https://docs.openzeppelin.com/contracts-cairo/proxies) on StarkNet.
+Plugin for [Nile](https://github.com/OpenZeppelin/nile) to deploy and manage [upgradeable smart contracts](https://docs.openzeppelin.com/contracts-cairo/proxies) on StarkNet.
 
 > ## ⚠️ WARNING! ⚠️
 >
@@ -9,6 +9,12 @@ Plugin for [Nile](https://github.com/OpenZeppelin/nile) to deploy and manage [up
 > This repo contains highly experimental code.
 > Expect rapid iteration.
 > **Use at your own risk.**
+
+## Installation
+
+```
+pip install nile-upgrades
+```
 
 ## Usage
 
@@ -80,16 +86,16 @@ tx_status = await tx.execute(watch_mode="track")
 
 ### Setup
 
-#### Using a released version of Nile
+#### Using the latest Nile release supported by this plugin
 
 1. Install [Poetry](https://python-poetry.org/docs/#installation)
-3. Clone this project.
-4. From this project's root, setup venv and install dependencies:
+2. Clone this project.
+3. From this project's root, create a virtualenv, activate it, and install dependencies:
 ```
 python3 -m venv env
 source env/bin/activate
 poetry install
-pip3 install -e .
+pip install -e .
 poetry run compile
 ```
 
@@ -100,13 +106,13 @@ poetry run compile
 1. Install [Poetry](https://python-poetry.org/docs/#installation)
 2. Clone https://github.com/OpenZeppelin/nile
 3. Clone this project.
-4. From this project's root, setup venv and install dependencies:
+4. From this project's root, create a virtualenv, activate it, and install dependencies:
 ```
 python3 -m venv env
 source env/bin/activate
 poetry install
-pip3 install -e <your_path_to_nile_repo_from_step_2>
-pip3 install -e .
+pip install -e <your_path_to_nile_repo_from_step_2>
+pip install -e .
 poetry run compile
 ```
 
