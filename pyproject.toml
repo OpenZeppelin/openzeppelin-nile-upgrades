@@ -24,6 +24,7 @@ classifiers = [
 packages = [
   { include = "nile_upgrades", from = "src" },
 ]
+include = ["src/nile_upgrades/artifacts/Proxy.json"]
 homepage = "https://github.com/OpenZeppelin/openzeppelin-nile-upgrades"
 repository = "https://github.com/OpenZeppelin/openzeppelin-nile-upgrades"
 
