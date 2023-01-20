@@ -7,7 +7,18 @@ from nile_upgrades.common import declare_class, get_contract_abi
 
 
 async def deploy_proxy(
-    nre, account, contract_name, salt, unique, initializer_args, initializer='initializer', alias=None, max_fee=None, standalone_mode=None
+    nre,
+    account,
+    contract_name,
+    salt,
+    unique,
+    initializer_args,
+    initializer='initializer',
+    alias=None,
+    max_fee_declare_impl=None,
+    max_fee_declare_proxy=None,
+    max_fee_deploy_proxy=None,
+    standalone_mode=None
 ):
     """
     Deploy an upgradeable proxy for an implementation contract.
@@ -28,14 +39,18 @@ async def deploy_proxy(
 
     `alias` - Unique identifier for your proxy. Defaults to `None`.
 
-    `max_fee` - Maximum fee for the transaction. Defaults to `None`.
+    `max_fee_declare_impl` - Maximum fee for declaring the implementation contract. Defaults to `None`.
+
+    `max_fee_declare_proxy` - Maximum fee for declaring the proxy contract. Defaults to `None`.
+
+    `max_fee_deploy_proxy` - Maximum fee for deploying the proxy contract. Defaults to `None`.
     """
 
     # Declare implementation
-    impl_class_hash = await declare_class(nre.network, contract_name, account, max_fee)
+    impl_class_hash = await declare_class(nre.network, contract_name, account, max_fee_declare_impl)
 
     # Declare proxy
-    await declare_class(nre.network, "Proxy", account, max_fee, overriding_path=_get_proxy_artifact_path())
+    await declare_class(nre.network, "Proxy", account, max_fee_declare_proxy, overriding_path=_get_proxy_artifact_path())
 
     # Deploy proxy
     logging.debug(f"Deploying proxy...")
@@ -45,7 +60,7 @@ async def deploy_proxy(
         salt=salt,
         unique=unique,
         calldata=[impl_class_hash, selector, len(initializer_args), *initializer_args],
-        max_fee=max_fee,
+        max_fee=max_fee_deploy_proxy,
         alias=alias,
         overriding_path=_get_proxy_artifact_path(),
         abi=get_contract_abi(contract_name),

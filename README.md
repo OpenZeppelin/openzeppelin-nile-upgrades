@@ -28,7 +28,17 @@ Returns a Nile Transaction instance representing the proxy deployment.
 
 ```
 async def deploy_proxy(
-    nre, account, contract_name, salt, unique, initializer_args, initializer='initializer', alias=None, max_fee=None
+    nre,
+    account,
+    contract_name,
+    salt,
+    unique,
+    initializer_args,
+    initializer='initializer',
+    alias=None,
+    max_fee_declare_impl=None,
+    max_fee_declare_proxy=None,
+    max_fee_deploy_proxy=None,
 )
 ```
 
@@ -46,7 +56,11 @@ async def deploy_proxy(
 
 - `alias` - Unique identifier for your proxy. Defaults to `None`.
 
-- `max_fee` - Maximum fee for the transaction. Defaults to `None`.
+- `max_fee_declare_impl` - Maximum fee for declaring the implementation contract. Defaults to `None`.
+
+- `max_fee_declare_proxy` - Maximum fee for declaring the proxy contract. Defaults to `None`.
+
+- `max_fee_deploy_proxy` - Maximum fee for deploying the proxy contract. Defaults to `None`.
 
 Example usage:
 ```
@@ -62,7 +76,12 @@ Returns a Nile Transaction instance representing the upgrade operation.
 
 ```
 async def upgrade_proxy(
-    nre, account, proxy_address_or_alias, contract_name, max_fee=None
+    nre,
+    account,
+    proxy_address_or_alias,
+    contract_name,
+    max_fee_declare_impl=None,
+    max_fee_upgrade_proxy=None,
 )
 ```
 
@@ -74,7 +93,9 @@ async def upgrade_proxy(
 
 - `contract_name` - the name of the implementation contract to upgrade to.
 
-- `max_fee` - Maximum fee for the transaction. Defaults to `None`.
+- `max_fee_declare_impl` - Maximum fee for declaring the new implementation contract. Defaults to `None`.
+
+- `max_fee_upgrade_proxy` - Maximum fee for upgrading the proxy to the new implementation. Defaults to `None`.
 
 Example usage:
 ```

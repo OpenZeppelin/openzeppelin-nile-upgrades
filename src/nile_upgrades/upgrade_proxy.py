@@ -9,7 +9,13 @@ from nile_upgrades.common import declare_class, get_contract_abi
 
 
 async def upgrade_proxy(
-    nre, account, proxy_address_or_alias, contract_name, max_fee=None, standalone_mode=None
+    nre,
+    account,
+    proxy_address_or_alias,
+    contract_name,
+    max_fee_declare_impl=None,
+    max_fee_upgrade_proxy=None,
+    standalone_mode=None
 ):
     """
     Upgrade a proxy to a different implementation contract.
@@ -24,18 +30,20 @@ async def upgrade_proxy(
 
     `contract_name` - the name of the implementation contract to upgrade to.
 
-    `max_fee` - Maximum fee for the transaction. Defaults to `None`.
+    `max_fee_declare_impl` - Maximum fee for declaring the new implementation contract. Defaults to `None`.
+
+    `max_fee_upgrade_proxy` - Maximum fee for upgrading the proxy to the new implementation. Defaults to `None`.
     """
 
     proxy_address = _load_deployment(proxy_address_or_alias, nre.network)
 
     # Declare new implementation
-    impl_class_hash = await declare_class(nre.network, contract_name, account, max_fee)
+    impl_class_hash = await declare_class(nre.network, contract_name, account, max_fee_declare_impl)
 
     # Perform upgrade
     logging.info(f"⏭️  Upgrading proxy {hex_address(proxy_address)} to class hash {hex_class_hash(impl_class_hash)}")
     upgrade_tx = await account.send(
-        proxy_address, "upgrade", calldata=[impl_class_hash], max_fee=max_fee
+        proxy_address, "upgrade", calldata=[impl_class_hash], max_fee=max_fee_upgrade_proxy
     )
 
     # Update ABI in deployments file
