@@ -113,7 +113,7 @@ tx_status = await tx.execute(watch_mode="track")
 2. Clone this project.
 3. From this project's root, create a virtualenv, activate it, and install dependencies:
 ```
-python3 -m venv env
+python3.9 -m venv env
 source env/bin/activate
 poetry install
 pip install -e .
@@ -129,7 +129,7 @@ poetry run compile
 3. Clone this project.
 4. From this project's root, create a virtualenv, activate it, and install dependencies:
 ```
-python3 -m venv env
+python3.9 -m venv env
 source env/bin/activate
 poetry install
 pip install -e <your_path_to_nile_repo_from_step_2>
