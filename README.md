@@ -115,6 +115,7 @@ tx_status = await tx.execute(watch_mode="track")
 ```
 python3.9 -m venv env
 source env/bin/activate
+pip install -U pip setuptools
 poetry install
 pip install -e .
 poetry run compile
@@ -131,6 +132,7 @@ poetry run compile
 ```
 python3.9 -m venv env
 source env/bin/activate
+pip install -U pip setuptools
 poetry install
 pip install -e <your_path_to_nile_repo_from_step_2>
 pip install -e .
