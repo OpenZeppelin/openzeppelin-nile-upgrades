@@ -29,7 +29,7 @@ Returns a Nile Transaction instance representing the proxy deployment.
 ```
 async def deploy_proxy(
     nre, account, contract_name, salt, unique, initializer_args, initializer='initializer', alias=None, max_fee=None
-):
+)
 ```
 
 - `nre` - the `NileRuntimeEnvironment` object.
@@ -63,7 +63,7 @@ Returns a Nile Transaction instance representing the upgrade operation.
 ```
 async def upgrade_proxy(
     nre, account, proxy_address_or_alias, contract_name, max_fee=None
-):
+)
 ```
 
 - `nre` - the `NileRuntimeEnvironment` object.
