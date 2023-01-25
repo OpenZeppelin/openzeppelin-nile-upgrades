@@ -18,7 +18,6 @@ async def deploy_proxy(
     max_fee_declare_impl=None,
     max_fee_declare_proxy=None,
     max_fee_deploy_proxy=None,
-    standalone_mode=None
 ):
     """
     Deploy an upgradeable proxy for an implementation contract.

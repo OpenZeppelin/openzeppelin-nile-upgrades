@@ -15,7 +15,6 @@ async def upgrade_proxy(
     contract_name,
     max_fee_declare_impl=None,
     max_fee_upgrade_proxy=None,
-    standalone_mode=None
 ):
     """
     Upgrade a proxy to a different implementation contract.
