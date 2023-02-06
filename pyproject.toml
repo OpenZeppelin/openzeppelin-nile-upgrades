@@ -6,7 +6,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "nile-upgrades"
-version = "0.0.2"
+version = "0.0.1"
 description = "Nile plugin to deploy and manage upgradeable smart contracts on StarkNet"
 keywords = ["cairo", "nile"]
 readme = "README.md"
@@ -32,7 +32,7 @@ repository = "https://github.com/OpenZeppelin/openzeppelin-nile-upgrades"
 compile = "compile_proxy:main"
 
 [tool.poetry.dependencies]
-python = ">=3.9,<3.10"
+python = ">=3.8,<3.10"
 click = "^8.0.4"
 
 [tool.poetry.dev-dependencies]
