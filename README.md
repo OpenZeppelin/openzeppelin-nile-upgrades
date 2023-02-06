@@ -4,7 +4,10 @@ Plugin for [Nile](https://github.com/OpenZeppelin/nile) to deploy and manage [up
 
 > ## ⚠️ WARNING! ⚠️
 >
-> **This plugin does not currently validate contracts for upgrade safety.**
+> This plugin does not currently validate contracts for upgrade safety (see [issue 34](https://github.com/OpenZeppelin/openzeppelin-nile-upgrades/issues/34)).
+**Review your contracts for upgrade safety before performing any deployments or upgrades.**
+
+> ## ⚠️ WARNING! ⚠️
 >
 > This repo contains highly experimental code.
 > Expect rapid iteration.
@@ -31,10 +34,10 @@ async def deploy_proxy(
     nre,
     account,
     contract_name,
-    salt,
-    unique,
     initializer_args,
     initializer='initializer',
+    salt=0,
+    unique=False,
     alias=None,
     max_fee_declare_impl=None,
     max_fee_declare_proxy=None,
@@ -48,11 +51,13 @@ async def deploy_proxy(
 
 - `contract_name` - the name of the implementation contract.
 
-- `salt` and `unique` - UDC specific arguments for proxy address generation.
-
 - `initializer_args` - array of arguments for the initializer function.
 
 - `initializer` - initializer function name. Defaults to `'initializer'`.
+
+- `salt` - the salt for proxy address generation. Defaults to `0`.
+
+- `unique` - whether the account address should be taken into account for proxy address generation. Defaults to `False`.
 
 - `alias` - Unique identifier for your proxy. Defaults to `None`.
 

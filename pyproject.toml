@@ -6,7 +6,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "nile-upgrades"
-version = "0.0.1"
+version = "0.0.2"
 description = "Nile plugin to deploy and manage upgradeable smart contracts on StarkNet"
 keywords = ["cairo", "nile"]
 readme = "README.md"

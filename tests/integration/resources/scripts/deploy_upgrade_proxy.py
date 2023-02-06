@@ -4,7 +4,7 @@ async def run(nre):
     accounts = await nre.get_accounts(predeployed=True)
     declarer_account = accounts[0]
 
-    tx = await nre.deploy_proxy(declarer_account, "contract", 123, True, [declarer_account.address])
+    tx = await nre.deploy_proxy(declarer_account, "contract", [declarer_account.address])
     _, proxy, abi = await tx.execute(watch_mode="track")
     print(f"Proxy deployed to address {hex_address(proxy)} using ABI {abi}")
 

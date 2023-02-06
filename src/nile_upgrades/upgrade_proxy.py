@@ -2,7 +2,6 @@ import logging
 
 from nile import deployments
 from nile.common import is_alias
-# from nile.core.account import Account
 from nile.utils import normalize_number, hex_class_hash, hex_address
 
 from nile_upgrades.common import declare_class, get_contract_abi
