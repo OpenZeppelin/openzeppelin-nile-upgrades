@@ -25,11 +25,11 @@ PROXY_ADDR_INT = 15
 PROXY_ARTIFACT_PATH = ("upgrades/artifacts", "upgrades/artifacts/abis")
 IMPL_ABI = get_contract_abi(CONTRACT)
 
-SALT_1 = 10
-UNIQUE_1 = True
+SALT_DEFAULT = 0
+UNIQUE_DEFAULT = False
 
-SALT_2 = 20
-UNIQUE_2 = False
+SALT = 10
+UNIQUE = True
 
 CUSTOM_INIT = "my_init_func"
 ALIAS = "my_alias"
@@ -56,9 +56,9 @@ async def test_deploy_proxy(
     with patch.dict(os.environ, {KEY: PRIVATE_KEY}, clear=False):
         account = await MockAccount(KEY, NETWORK)
 
-    await deploy_proxy(NileRuntimeEnvironment(), account, CONTRACT, SALT_1, UNIQUE_1, ARGS)
+    await deploy_proxy(NileRuntimeEnvironment(), account, CONTRACT, ARGS)
 
-    _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_class, account, "initializer", PROXY_ARTIFACT_PATH, SALT_1, UNIQUE_1, None, None, None, None)
+    _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_class, account, "initializer", PROXY_ARTIFACT_PATH, SALT_DEFAULT, UNIQUE_DEFAULT, None, None, None, None)
 
 
 @pytest.mark.asyncio
@@ -74,9 +74,9 @@ async def test_deploy_proxy_all_opts(
     with patch.dict(os.environ, {KEY: PRIVATE_KEY}, clear=False):
         account = await MockAccount(KEY, NETWORK)
 
-    await deploy_proxy(NileRuntimeEnvironment(), account, CONTRACT, SALT_2, UNIQUE_2, ARGS, CUSTOM_INIT, ALIAS, MAX_FEE_DECLARE_IMPL, MAX_FEE_DECLARE_PROXY, MAX_FEE_DEPLOY_PROXY)
+    await deploy_proxy(NileRuntimeEnvironment(), account, CONTRACT, ARGS, CUSTOM_INIT, SALT, UNIQUE, ALIAS, MAX_FEE_DECLARE_IMPL, MAX_FEE_DECLARE_PROXY, MAX_FEE_DEPLOY_PROXY)
 
-    _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_class, account, CUSTOM_INIT, PROXY_ARTIFACT_PATH, SALT_2, UNIQUE_2, ALIAS, MAX_FEE_DECLARE_IMPL, MAX_FEE_DECLARE_PROXY, MAX_FEE_DEPLOY_PROXY)
+    _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_class, account, CUSTOM_INIT, PROXY_ARTIFACT_PATH, SALT, UNIQUE, ALIAS, MAX_FEE_DECLARE_IMPL, MAX_FEE_DECLARE_PROXY, MAX_FEE_DEPLOY_PROXY)
 
 
 def _assert_calls_and_logs(mock_deploy, mock_get_selector, mock_declare_class, account, initializer, overriding_path, salt, unique, alias, max_fee_declare_impl, max_fee_declare_proxy, max_fee_deploy_proxy):
