@@ -13,7 +13,7 @@ async def deploy_proxy(
     initializer_args,
     initializer='initializer',
     salt=0,
-    unique=False,
+    unique=True,
     alias=None,
     max_fee_declare_impl=None,
     max_fee_declare_proxy=None,
@@ -37,7 +37,7 @@ async def deploy_proxy(
 
     `salt` - the salt for proxy address generation. Defaults to `0`.
 
-    `unique` - whether the account address should be taken into account for proxy address generation. Defaults to `False`.
+    `unique` - whether the account address should be taken into account for proxy address generation. Defaults to `True`.
 
     `alias` - Unique identifier for your proxy. Defaults to `None`.
 
