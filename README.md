@@ -4,7 +4,10 @@ Plugin for [Nile](https://github.com/OpenZeppelin/nile) to deploy and manage [up
 
 > ## ⚠️ WARNING! ⚠️
 >
-> **This plugin does not currently validate contracts for upgrade safety.**
+> This plugin does not currently validate contracts for upgrade safety (see [issue 34](https://github.com/OpenZeppelin/openzeppelin-nile-upgrades/issues/34)).
+**Review your contracts for upgrade safety before deploying them.**
+
+> ## ⚠️ WARNING! ⚠️
 >
 > This repo contains highly experimental code.
 > Expect rapid iteration.
