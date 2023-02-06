@@ -26,10 +26,10 @@ PROXY_ARTIFACT_PATH = ("upgrades/artifacts", "upgrades/artifacts/abis")
 IMPL_ABI = get_contract_abi(CONTRACT)
 
 SALT_DEFAULT = 0
-UNIQUE_DEFAULT = False
+UNIQUE_DEFAULT = True
 
 SALT = 10
-UNIQUE = True
+UNIQUE = False
 
 CUSTOM_INIT = "my_init_func"
 ALIAS = "my_alias"
