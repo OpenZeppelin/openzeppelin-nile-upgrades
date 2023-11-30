@@ -1,3 +1,5 @@
+> Disclaimer: this project is deprecated and no longer maintained. [scarb](https://docs.swmansion.com/scarb/) is preferred over nile.
+
 # OpenZeppelin Nile Upgrades
 
 Plugin for [Nile](https://github.com/OpenZeppelin/nile) to deploy and manage [upgradeable smart contracts](https://docs.openzeppelin.com/contracts-cairo/proxies) on StarkNet.
